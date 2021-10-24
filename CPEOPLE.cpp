@@ -60,7 +60,7 @@ void CPEOPLE::Move(DIRECTION direction) {
 	switch (direction)
 	{
 	case DIRECTION::UP:
-				this->Up(4);
+				this->Up(1);
 				break;
 	case DIRECTION::DOWN:
 				this->Down(1);
@@ -167,6 +167,7 @@ void CPEOPLE::drawPeople() {
 	int x = this->mCurrPos.getX();
 	int y = this->mCurrPos.getY();
 	TextColor(PEOPLE_COLOR);
+
 	while (getline(sstream, tempStr, '\n')) {
 		GotoXY(x, y + line++);
 		cout << tempStr;

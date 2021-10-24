@@ -2,10 +2,10 @@
 #include "CCAR.h"
 
 DIRECTION MOVING;
-CGAME* game = CGAME::getGame();
+CGAME* game;
 int size = sizeof(game);
 
-double FPS = (1.0/50) * 1000;
+double FPS = (1.0/60) * 1000;
 void renderGameThread() {
 	while (true) {
 		if (!game->getPeople().isDead()) {
@@ -14,15 +14,18 @@ void renderGameThread() {
 		MOVING = (DIRECTION)' ';
 		//game.updatePosVehicle();
 		game->drawGame();
+		deleteScreen();
 		Sleep(FPS);
 	}
 }
 
 int main() {
 	int temp;
-	ResizeConsole(1024, 768); // width height
+	
+	ResizeConsole(980, 700); // width height 980 700
 	FixConsoleWindow();
 	ShowCursorConsole(false);
+	game = CGAME::getGame();
 	game->startGame();
 	
 	thread renderGame(renderGameThread);

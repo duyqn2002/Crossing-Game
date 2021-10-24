@@ -1,7 +1,7 @@
 ﻿#include "CGAME.h"
 
 void CGAME::setRandomPostionTrucks(const int& numberOfTrucks) {
-	
+	this->m_pTrucks = new CTRUCK[numberOfTrucks];
 }
 
 void CGAME::setPeople() {
@@ -41,7 +41,7 @@ CGAME::CGAME() {
 	this->setPlayingArea();
 	this->setPeople();
 
-	this->mNumberOfLane = 5;
+	this->mNumberOfLane = 7;
 	this->isHasObject = vector<bool>( this->mNumberOfLane, false);
 
 	this->mNumberOfVehicles = 2;	
@@ -138,6 +138,7 @@ void  CGAME::drawAnimals() {
 }
 
 void CGAME::drawGame() {
+
 	// Erase the old obj on console screen
 	//this->mPlayer.eraseTraceOfPeople();
 	this->drawPlayingArea();

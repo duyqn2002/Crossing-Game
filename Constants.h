@@ -5,7 +5,7 @@
 #define TOP_LEFT_X 0
 #define TOP_LEFT_Y 0
 #define SCALE_X 1
-#define SCALE_Y 0.65
+#define SCALE_Y 0.8
 
 // Constant color for game
 #define DEFAULT_COLOR COLOR::WHITE

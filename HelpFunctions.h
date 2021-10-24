@@ -24,5 +24,6 @@ int GetHeightAsciiArt(string);
 int RandomInt(int, int);
 
 void TextColor(COLOR);
+void deleteScreen();
 
 #endif // HELPFUNCTIONS_H
