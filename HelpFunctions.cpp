@@ -7,10 +7,24 @@ void FixConsoleWindow() {
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
 
-void ResizeConsole(int width, int height) {
+RECT GetScreenRect(){
+	// Get desktop size
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+	GetWindowRect(hDesktop, &desktop);
+
+	return desktop;
+}
+
+void ResizeConsoleAndCenterConsole(int height, int width) {
+	// Get console size
+	RECT r = GetScreenRect();
 	HWND console = GetConsoleWindow();
-	RECT r;
-	GetWindowRect(console, &r);
+
+	// Align the console to center of screen
+	r.left = (r.right - width) / 2;
+	r.top = (r.bottom - height) / 2;
+
 	MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
@@ -66,7 +80,7 @@ int GetWidthAsciiArt(string art) {
 			continue;
 		}
 		count++;
-		
+
 	}
 
 	return width;
@@ -96,7 +110,7 @@ void TextColor(COLOR color) {
 	SetConsoleTextAttribute(hConsoleColor, (int)color);
 }
 
-void deleteScreen() {
+void DeleteScreen() {
 	HANDLE hOut;
 	COORD Position;
 	hOut = GetStdHandle(STD_OUTPUT_HANDLE);

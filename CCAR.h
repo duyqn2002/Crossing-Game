@@ -5,7 +5,6 @@
 
 class CCAR : public CVEHICLE {
 public:
-	char getName() const { return 'C'; }
 
 };
 

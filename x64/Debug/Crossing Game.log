@@ -1,1 +1,20 @@
-﻿
+﻿  CGAME.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\CGAME.cpp(6,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\CGAME.cpp(11,20): warning C4244: '*=': conversion from 'float' to 'int', possible loss of data
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\CGAME.cpp(40,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\CGAME.cpp(41,34): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\CGAME.cpp(127,10): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  CPEOPLE.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  CTRUCK.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  CVEHICLE.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  HelpFunctions.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+  main.cpp
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\Constants.h(30,30): warning C4305: 'initializing': truncation from 'double' to 'const float'
+C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\main.cpp(16,9): warning C4244: 'argument': conversion from 'double' to 'DWORD', possible loss of data
+  Generating Code...
+  Crossing Game.vcxproj -> C:\Users\duong\Desktop\HCMUS\21-22\HK1\OOP\Crossing Game\Crossing Game\x64\Debug\Crossing Game.exe

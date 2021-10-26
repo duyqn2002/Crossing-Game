@@ -6,8 +6,7 @@
 class CTRUCK : public CVEHICLE {
 public:
 	CTRUCK();
-	char getName() const { return 'B'; }
-	void drawVehicle();
+	//void drawVehicle() const override;
 };
 
 #endif // CTRUCK_H

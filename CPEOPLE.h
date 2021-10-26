@@ -34,6 +34,7 @@ public:
 	void Right(int);
 	void Down(int);
 	void Move(DIRECTION);
+
 	// Check impact
 	bool isImpact(const CVEHICLE*&);
 	bool isImpact(const CANIMAL*&);
@@ -45,7 +46,7 @@ public:
 
 	// Render people function
 	void eraseTraceOfPeople();
-	void drawPeople();
+	void drawPeople() const;
 };
 
 #endif // CPEOPLE_H

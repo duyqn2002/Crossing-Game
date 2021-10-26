@@ -1,77 +1,77 @@
 #include "CPEOPLE.h"
 
 CPEOPLE::CPEOPLE() {
-	this->mState = true;
+	mState = true;
 
-	this->mPeopleRightForm = "~o/\n"
+	mPeopleRightForm = "~o/\n"
 						     "/| \n"
 						     "/ \\";
 
-	this->mPeopleLeftForm = "\\o~\n" 
+	mPeopleLeftForm = "\\o~\n" 
 					        " |\\\n" 
 		                    "/ \\";
 
-	this->mHeight = GetHeightAsciiArt(this->mPeopleLeftForm);
-	this->mWidth = GetWidthAsciiArt(this->mPeopleLeftForm);
+	mHeight = GetHeightAsciiArt(mPeopleLeftForm);
+	mWidth = GetWidthAsciiArt(mPeopleLeftForm);
 
-	this->mMovingDirection = RandomInt(2,0) ? DIRECTION::LEFT : DIRECTION::RIGHT; // Randomly start direction
+	mMovingDirection = RandomInt(2,0) ? DIRECTION::LEFT : DIRECTION::RIGHT; // Randomly start direction
 }
 
 void CPEOPLE::setXY(int x, int y) {
-	this->mCurrPos.setX(x);
-	this->mCurrPos.setY(y);
+	mCurrPos.setX(x);
+	mCurrPos.setY(y);
 }
 
 void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
-	this->mTopLeft = topLeft;
-	this->mBottomRight = bottomRight;
+	mTopLeft = topLeft;
+	mBottomRight = bottomRight;
 }
 
 int CPEOPLE::getHeight() const{
-	return this->mHeight;
+	return mHeight;
 }
 
 int CPEOPLE::getWidth() const{
-	return this->mWidth;
+	return mWidth;
 }
 
 void CPEOPLE::Up(int delta) {
-	this->mCurrPos.moveY(-delta);
-	this->mMovingDirection = DIRECTION::UP;
+	mCurrPos.moveY(-delta);
+	mMovingDirection = DIRECTION::UP;
 }
 
 void CPEOPLE::Left(int delta) {
-	this->mCurrPos.moveX(-delta);
-	this->mMovingDirection = DIRECTION::LEFT;
+	mCurrPos.moveX(-delta);
+	mMovingDirection = DIRECTION::LEFT;
 }
 
 void CPEOPLE::Right(int delta) {
-	this->mCurrPos.moveX(delta);
-	this->mMovingDirection = DIRECTION::RIGHT;
+	mCurrPos.moveX(delta);
+	mMovingDirection = DIRECTION::RIGHT;
 }
 
 void CPEOPLE::Down(int delta) {
-	this->mCurrPos.moveY(delta);
-	this->mMovingDirection = DIRECTION::DOWN;
+	mCurrPos.moveY(delta);
+	mMovingDirection = DIRECTION::DOWN;
 }
 
 void CPEOPLE::Move(DIRECTION direction) {
-	this->eraseTraceOfPeople();
-	switch (direction)
-	{
-	case DIRECTION::UP:
-				this->Up(1);
-				break;
-	case DIRECTION::DOWN:
-				this->Down(1);
-				break;
-	case DIRECTION::LEFT:
-				this->Left(1);
-				break;
-	case DIRECTION::RIGHT:
-				this->Right(1);
-				break;
-	
+	switch (direction){
+		case DIRECTION::UP:
+					Up(1);
+					break;
+
+		case DIRECTION::DOWN:
+					Down(1);
+					break;
+
+		case DIRECTION::LEFT:
+					Left(1);
+					break;
+
+		case DIRECTION::RIGHT:
+					Right(1);
+					break;
 	}
 }
 
@@ -84,7 +84,7 @@ bool CPEOPLE::isImpact(const CANIMAL*&) {
 }
 
 bool  CPEOPLE::isFinish() {
-	if (this->mCurrPos.getY() == this->mTopLeft.getY() - 1)
+	if (mCurrPos.getY() == mTopLeft.getY() - 1)
 		return true;
 
 	return false;
@@ -102,14 +102,14 @@ bool CPEOPLE::isHitLimit(DIRECTION direction) {
 	int maxY, minY;
 	int currX, currY;
 
-	minX = this->mTopLeft.getX() + 1;
-	minY = this->mTopLeft.getY() + 1;
+	minX = mTopLeft.getX() + 1;
+	minY = mTopLeft.getY() + 1;
 
-	maxX = this->mBottomRight.getX() - this->mWidth;
-	maxY = this->mBottomRight.getY() - this->mHeight;
+	maxX = mBottomRight.getX() - mWidth;
+	maxY = mBottomRight.getY() - mHeight;
 
-	currX = this->mCurrPos.getX();
-	currY = this->mCurrPos.getY();
+	currX = mCurrPos.getX();
+	currY = mCurrPos.getY();
 
 	switch (direction)
 	{
@@ -138,34 +138,33 @@ bool CPEOPLE::isHitLimit(DIRECTION direction) {
 void CPEOPLE::eraseTraceOfPeople() {
 	int index = 0;
 	string line = "";
-	int x = this->mCurrPos.getX();
-	int y = this->mCurrPos.getY();
+	int x = mCurrPos.getX();
+	int y = mCurrPos.getY();
 
-	
-	while (index++ < this->mWidth) {
+	while (index++ < mWidth) {
 		line += " ";
 	}
 
 	index = 0;
-	while (index < this->mHeight) {
+	while (index < mHeight) {
 		GotoXY(x, y + index++);
 		cout << line;
 	}
 }
 
-void CPEOPLE::drawPeople() {
+void CPEOPLE::drawPeople() const {
 	stringstream sstream;
-	if (this->mMovingDirection == DIRECTION::LEFT) {
-		sstream << this->mPeopleLeftForm;
+	if (mMovingDirection == DIRECTION::LEFT) {
+		sstream << mPeopleLeftForm;
 	}
 	else {
-		sstream << this->mPeopleRightForm;
+		sstream << mPeopleRightForm;
 	}
 
 	string tempStr = "";
 	int line = 0;
-	int x = this->mCurrPos.getX();
-	int y = this->mCurrPos.getY();
+	int x = mCurrPos.getX();
+	int y = mCurrPos.getY();
 	TextColor(PEOPLE_COLOR);
 
 	while (getline(sstream, tempStr, '\n')) {

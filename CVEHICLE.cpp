@@ -1,109 +1,141 @@
 #include "CVEHICLE.h"
 
-CVEHICLE::CVEHICLE() {
-	this->mSrcX = 0;
-	this->mDesX = 0;
-
-	this->mHeight = 0;
-	this->mWidth = 0;
-
-	this->mMovingDirection = DIRECTION::LEFT;
-	this->mVehicleLeftForm = "";
-	this->mVehicleRightForm = "";
+void CVEHICLE::reset() {
+	mCurrPos.setX(mStartPosX);
 }
 
-CVEHICLE::~CVEHICLE() {}
-
 void CVEHICLE::setXY(int x, int y) {
-	this->mCurrPos.setXY(x, y);
+	mCurrPos.setXY(x, y);
+}
+
+void CVEHICLE::setStartPosX(int startX) {
+	mStartPosX = startX;
+	mCurrPos.setX(startX);
+}
+
+void CVEHICLE::setLeft(int srcX) {
+	mLeft = srcX;
+}
+
+void CVEHICLE::setRight(int desX) {
+	mRight = desX;
 }
 
 void CVEHICLE::Move(int deltaX, int deltaY) {
-	this->mCurrPos.moveXY(deltaX,deltaY);
+	mCurrPos.moveXY(deltaX, deltaY);
 }
 
-void CVEHICLE::eraseVehicleHead() {
+void CVEHICLE::eraseVehicleHead() const {
 	int line = 0;
-	int x = this->mCurrPos.getX();
-	int y = this->mCurrPos.getY();
-	while (line < this->mHeight) {
+	int x = mCurrPos.getX();
+	int y = mCurrPos.getY();
+	while (line < mHeight) {
 		GotoXY(x, y + line++);
 		cout << " ";
 	}
 }
 
-void CVEHICLE::eraseVehicleTail() {
+void CVEHICLE::eraseVehicleTail() const {
 	int line = 0;
-	int x = this->mCurrPos.getX() + this->mWidth;
-	int y = this->mCurrPos.getY();
-	while (line < this->mHeight) {
-		GotoXY(x ,y + line++);
+	int x = mCurrPos.getX() + mWidth;
+	int y = mCurrPos.getY();
+	while (line < mHeight) {
+		GotoXY(x, y + line++);
 		cout << " ";
 	}
 }
 
-void CVEHICLE::erase(){
-	/*if (this->mMovingDirection == Direction::LEFT) {
-		if (this->mX <= this->mSrcX) {
-			this->eraseVehicleHead();
-		}
-		else {
-			if (this->mX >= this->mDesX) {
-				this->eraseVehicleTail();
-			}
-		}
-		this->eraseVehicleTail();
+void CVEHICLE::eraseOldVehicle() const {
+	switch (mMovingDirection)
+	{
+	case DIRECTION::LEFT:
+		eraseVehicleTail();
+		break;
+	case DIRECTION::RIGHT:
+		eraseVehicleHead();
+		break;
+	default:
+		return;
+	}
+}
+
+void CVEHICLE::drawVehicle() const {
+	// If the truck in playing zone then draw it
+	if (isOutSide() == true)
+		return;
+
+	int startChar = 0;
+	int nChar = 0;
+	stringstream sstream;
+	string tempStr = "";
+	int line = 0;
+	int x = mCurrPos.getX();
+	int y = mCurrPos.getY();
+
+	if (x < mLeft) {
+		startChar = mLeft + 1 - x;
+		nChar = mWidth - startChar;
 	}
 	else {
-		if (this->mX <= this->mDesPoint.getX()) {
-			this->eraseVehicleHead();
+		if (x + mWidth >= mRight) {
+			startChar = 0;
+			nChar = mRight - x;
 		}
 		else {
-			if (this->mX >= this->mSrcPoint.getX()) {
-				this->eraseVehicleTail();
-			}
+			nChar = mWidth;
 		}
-		this->eraseVehicleHead();
-	}*/
-}
+	}
 
-void CVEHICLE::drawVehicle() {}
+	if (mMovingDirection == DIRECTION::LEFT) {
+		sstream << mVehicleLeftForm;
+	}
+	else {
+		sstream << mVehicleRightForm;
+	}
 
-void CVEHICLE::updatePos(int deltaX) {
-	switch (this->mMovingDirection)
-	{
-		case DIRECTION::LEFT:
-			this->Move(-deltaX, 0);
-			break;
-		case DIRECTION::RIGHT:
-			
-			this->Move(deltaX, 0);
-			break;
+	while (getline(sstream, tempStr, '\n')) {
+		GotoXY(x + startChar, y + line++);
+		cout << tempStr.substr(startChar, nChar);
 	}
 }
 
-bool CVEHICLE::isHitLimit() const {
-	bool isOutSide = false;
-	int maxX, minX;
-	int x = this->mCurrPos.getX();
-	minX = this->mSrcX - this->mWidth;
-	maxX = this->mDesX;
-	
+void CVEHICLE::updatePos(int deltaX) {
+	// Before update position, erase the old trace of vehicle
+	eraseOldVehicle();
 
-	switch (this->mMovingDirection)
+	switch (mMovingDirection)
 	{
-	
 	case DIRECTION::LEFT:
-		if (x == minX)
+		Move(-deltaX, 0);
+		break;
+	case DIRECTION::RIGHT:
+		if (mCurrPos.getX() > mRight + 10) {
+			reset();
+		}
+		Move(deltaX, 0);
+		break;
+	default:
+		return;
+	}
+}
+
+bool CVEHICLE::isOutSide() const {
+	bool isOutSide = false;
+	int x = mCurrPos.getX();
+
+	switch (mMovingDirection)
+	{
+	case DIRECTION::LEFT:
+		if (x + mWidth >= mLeft || x <= mRight)
 			isOutSide = true;
 		break;
-
 	case DIRECTION::RIGHT:
-		if (x == maxX)
+		if (x + mWidth <= mLeft || x  >= mRight)
 			isOutSide = true;
+		break;
+	default:
 		break;
 	}
 
 	return isOutSide;
 }
-
