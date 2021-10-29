@@ -1,12 +1,10 @@
-#include "Constants.h"
-
 #ifndef HELPFUNCTIONS_H
 #define HELPFUNCTIONS_H
 
-void FixConsoleWindow();
-void ResizeConsoleAndCenterConsole(int, int);
-void GotoXY(int , int);
-void ShowCursorConsole(bool);
+#include "Constants.h"
+
+void ConstructConsole(int width, int height, int fontw, int fonth);
+void GotoXY(int x, int y);
 
 int GetHeightConsoleWindowBuffer();
 int GetWidthConsoleWindowBuffer();
@@ -16,7 +14,7 @@ int GetHeightAsciiArt(string);
 
 int RandomInt(int, int);
 
-void TextColor(COLOR);
-void DeleteScreen();
+void TextColor(COLOUR);
+
 
 #endif // HELPFUNCTIONS_H

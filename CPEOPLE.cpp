@@ -3,13 +3,13 @@
 CPEOPLE::CPEOPLE() {
 	mState = true;
 
-	mPeopleRightForm = "~o/\n"
-						     "/| \n"
-						     "/ \\";
+	mPeopleRightForm ="~o/\n"
+					  "/| \n"
+					  "/ \\";
 
-	mPeopleLeftForm = "\\o~\n" 
-					        " |\\\n" 
-		                    "/ \\";
+	mPeopleLeftForm = "\\o~\n"
+					  " |\\\n"
+					  "/ \\";
 
 	mHeight = GetHeightAsciiArt(mPeopleLeftForm);
 	mWidth = GetWidthAsciiArt(mPeopleLeftForm);
@@ -35,6 +35,20 @@ int CPEOPLE::getWidth() const{
 	return mWidth;
 }
 
+void CPEOPLE::Clip(int& x, int& y) {
+	if (x <= mTopLeft.getX())
+		x = mTopLeft.getX() + 1;
+
+	if (x >= mBottomRight.getY())
+		x = mBottomRight.getX() - mWidth;
+
+	if (y < mTopLeft.getY())
+		y = mTopLeft.getY() + 1;
+
+	if (y >= mBottomRight.getY())
+		y = mBottomRight.getY() - mHeight;
+}
+
 void CPEOPLE::Up(int delta) {
 	mCurrPos.moveY(-delta);
 	mMovingDirection = DIRECTION::UP;
@@ -55,32 +69,33 @@ void CPEOPLE::Down(int delta) {
 	mMovingDirection = DIRECTION::DOWN;
 }
 
-void CPEOPLE::Move(DIRECTION direction) {
+void CPEOPLE::Move(DIRECTION direction, int delta) {
+
 	switch (direction){
 		case DIRECTION::UP:
-					Up(1);
+					Up(delta);
 					break;
 
 		case DIRECTION::DOWN:
-					Down(1);
+					Down(delta);
 					break;
 
 		case DIRECTION::LEFT:
-					Left(1);
+					Left(mWidth);
 					break;
 
 		case DIRECTION::RIGHT:
-					Right(1);
+					Right(mWidth);
 					break;
 	}
 }
 
-bool CPEOPLE::isImpact(const CVEHICLE*&) {
-	return true;
+bool CPEOPLE::isImpact(const vector<CVEHICLE>& allVehicles) {
+	return false;
 }
 
-bool CPEOPLE::isImpact(const CANIMAL*&) {
-	return true;
+bool CPEOPLE::isImpact(const vector<CANIMAL>&) {
+	return false;
 }
 
 bool  CPEOPLE::isFinish() {
@@ -91,9 +106,10 @@ bool  CPEOPLE::isFinish() {
 }
 
 bool  CPEOPLE::isDead() {
-	if (mState == false)
+	/*if (mState == false)
 		return true;
-	return false;
+	return false;*/
+	return !mState;
 }
 
 bool CPEOPLE::isHitLimit(DIRECTION direction) {
@@ -165,10 +181,16 @@ void CPEOPLE::drawPeople() const {
 	int line = 0;
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
-	TextColor(PEOPLE_COLOR);
+	TextColor(PEOPLE_COLOUR);
 
 	while (getline(sstream, tempStr, '\n')) {
 		GotoXY(x, y + line++);
+		/*for (int i = 0; i < mWidth; i++) {
+			if (tempStr[i] != ' ' && tempStr[i] != '\n') {
+				TextColor((COLOUR)170);
+				cout << " ";
+			}
+		}*/
 		cout << tempStr;
 	}
 }

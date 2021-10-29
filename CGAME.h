@@ -1,54 +1,40 @@
-﻿#include "CPEOPLE.h"
-#include "CTRUCK.h"
-
-using namespace std;
-
-#ifndef CGAME_H
+﻿#ifndef CGAME_H
 #define CGAME_H
 
-// Singleton Design Pattern
+#include "CPEOPLE.h"
+#include "CTRUCK.h"
+#include "CCAR.h"
 
 class CGAME {
 	static CGAME* m_pGame;
+	vector <pair<float,vector<CVEHICLE*>>>m_vecLanes;
 
 	// Game object
-	CVEHICLE* m_pAllVehicles;
-	CTRUCK* m_pTrucks;
+	vector<CTRUCK> m_vecTrucks;
+	vector<CCAR> m_vecCars;
 
 	// Player
 	CPEOPLE mPeople;
 
-	// Console Buffer
-	int mWindowHeight, mWindowWidth;
-
 	// Playing area setting
-	CPOINT2D mTopLeft, mBottomRight;
-	int mPlayingAreaHeight, mPlayingAreaWdth;
-
-	// Road lane
-	int mNumberOfLane;
-	int gapBetween2Lane;
-	vector<short>lanePosY;
-	vector<bool>isHasObject;
-
-	int mNumberOfVehicles;
+	CPOINT2D mTopLeft;
+	CPOINT2D mBottomRight;
 
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
 public:
-	~CGAME(); // Hủy tài nguyên đã cấp phát
 	static CGAME* getGame();
+	CGAME(const CGAME&) {};
+	~CGAME() = default; // Hủy tài nguyên đã cấp phát
 
 	// Post process
-	void setRandomPostionTrucks(const int&);
 	void setPeople();
-	void setAllVehicles();
 	void setPlayingArea();
 
 	CPEOPLE getPeople() const; // Lấy thông tin người
-	CVEHICLE* getVehicle(); // Lấy danh sách các xe
-	CANIMAL* getAnimal(); // Lấy danh sách các thú
+	vector<CVEHICLE> getVehicles() const; // Lấy danh sách các xe
+	vector<CANIMAL> getAnimals() const; // Lấy danh sách các thú
 
-	void drawLane() const; // Vẽ lane đường
+	void drawPeopleSafeLane(int, int, int, int) const;
 	void drawPlayingArea() const; // Vẽ khu vực chơi
 	void drawVehicles() const; // Vẽ xe
 	void drawAnimals(); // Vẽ thú

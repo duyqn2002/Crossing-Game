@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Crossing Game", "Crossing Game.vcxproj", "{2E3D625E-CF4C-42F8-98A2-8E49A3BE38AB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AsciiDraw", "..\AsciiDraw\AsciiDraw.vcxproj", "{478E2844-EDA4-49C7-9432-5CAF60BD8B06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{2E3D625E-CF4C-42F8-98A2-8E49A3BE38AB}.Release|x64.Build.0 = Release|x64
 		{2E3D625E-CF4C-42F8-98A2-8E49A3BE38AB}.Release|x86.ActiveCfg = Release|Win32
 		{2E3D625E-CF4C-42F8-98A2-8E49A3BE38AB}.Release|x86.Build.0 = Release|Win32
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Debug|x64.ActiveCfg = Debug|x64
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Debug|x64.Build.0 = Debug|x64
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Debug|x86.ActiveCfg = Debug|Win32
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Debug|x86.Build.0 = Debug|Win32
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Release|x64.ActiveCfg = Release|x64
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Release|x64.Build.0 = Release|x64
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Release|x86.ActiveCfg = Release|Win32
+		{478E2844-EDA4-49C7-9432-5CAF60BD8B06}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

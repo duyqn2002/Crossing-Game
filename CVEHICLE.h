@@ -8,13 +8,16 @@ class CVEHICLE {
 protected:
 	CPOINT2D mCurrPos;
 	int mStartPosX = 0;
+
 	int mLeft = 0;
 	int mRight = 0;
+
 	int mHeight = 0;
 	int mWidth = 0;
 	DIRECTION mMovingDirection;
 	string mVehicleLeftForm;
 	string mVehicleRightForm;
+	COLOUR mVehicleColour = DEFAULT_COLOUR;
 public:
 	CVEHICLE() = default;
 	virtual ~CVEHICLE() = default;
@@ -24,6 +27,12 @@ public:
 	void setStartPosX(int);
 	void setLeft(int);
 	void setRight(int);
+
+	int getX() const;
+	int getY() const;
+
+	int Width() const;
+	int Height() const;
 
 	virtual void Move(int, int);
 	virtual void eraseVehicleHead() const;

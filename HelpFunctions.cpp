@@ -7,34 +7,6 @@ void FixConsoleWindow() {
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
 
-RECT GetScreenRect(){
-	// Get desktop size
-	RECT desktop;
-	const HWND hDesktop = GetDesktopWindow();
-	GetWindowRect(hDesktop, &desktop);
-
-	return desktop;
-}
-
-void ResizeConsoleAndCenterConsole(int height, int width) {
-	// Get console size
-	RECT r = GetScreenRect();
-	HWND console = GetConsoleWindow();
-
-	// Align the console to center of screen
-	r.left = (r.right - width) / 2;
-	r.top = (r.bottom - height) / 2;
-
-	MoveWindow(console, r.left, r.top, width, height, TRUE);
-}
-
-void GotoXY(int x, int y) {
-	COORD coord;
-	coord.X = x;
-	coord.Y = y;
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
 void ShowCursorConsole(bool isVisible) {
 	// Source: https://stackoverflow.com/a/30126700
 	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -42,6 +14,82 @@ void ShowCursorConsole(bool isVisible) {
 	info.dwSize = 100;
 	info.bVisible = isVisible;
 	SetConsoleCursorInfo(consoleHandle, &info);
+}
+
+void ConstructConsole(int width, int height, int fontw, int fonth)
+{
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	SMALL_RECT rectWindow = { 0, 0, 1, 1 };
+	SetConsoleWindowInfo(hConsole, TRUE, &rectWindow);
+
+	// Set the screen buffer size
+	COORD coord = { (short)width, (short)height };
+	if (!SetConsoleScreenBufferSize(hConsole, coord))
+		return;
+
+	// Assign screen buffer to the console
+	if (!SetConsoleActiveScreenBuffer(hConsole))
+		return;
+
+	// Set the font width and font height of console
+	CONSOLE_FONT_INFOEX cfi;
+	cfi.cbSize = sizeof(cfi);
+	cfi.nFont = 0;
+	cfi.dwFontSize.X = fontw;
+	cfi.dwFontSize.Y = fonth;
+
+	if (!SetCurrentConsoleFontEx(hConsole, false, &cfi))
+		return;
+
+	// Check if valid width and height
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
+		return;
+	if (height > csbi.dwMaximumWindowSize.Y)
+		return;
+	if (width > csbi.dwMaximumWindowSize.X)
+		return;
+
+	// Set the console width and height
+	rectWindow = { 0, 0, (short)width - 1, (short)height - 1 };
+	if (!SetConsoleWindowInfo(hConsole, TRUE, &rectWindow))
+		return;
+
+	// No resize window
+	FixConsoleWindow();
+
+	// Hide the cursor
+	ShowCursorConsole(false);
+}
+
+void CenterConsole(int width, int height) {
+	// 
+	HWND hConsoleWnd = GetConsoleWindow();
+	HMONITOR hMonitor = MonitorFromWindow(hConsoleWnd, MONITOR_DEFAULTTONEAREST);
+
+	// Align the console to center of screen
+	if (hMonitor)
+	{
+		MONITORINFO info{ sizeof(info) }; // set cbSize member and fill the rest with zero
+		if (GetMonitorInfo(hMonitor, &info))
+		{
+			int x = (info.rcWork.left + info.rcWork.right) / 2 - width / 2;
+			int y = (info.rcWork.top + info.rcWork.bottom) / 2 - height / 2;
+
+			SetWindowPos(hConsoleWnd, nullptr, x, y, width, height,
+				SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOSIZE);
+		}
+	}
+
+	//MoveWindow(console, r.left, r.top, width, height, TRUE);
+}
+
+void GotoXY(int x, int y) {
+	COORD coord;
+	coord.X = (short)x;
+	coord.Y = (short)y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
 int GetHeightConsoleWindowBuffer() {
@@ -105,16 +153,7 @@ int RandomInt(int MAX, int MIN) {
 	return randDevice() % range + MIN;
 }
 
-void TextColor(COLOR color) {
+void TextColor(COLOUR color) {
 	HANDLE hConsoleColor = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsoleColor, (int)color);
-}
-
-void DeleteScreen() {
-	HANDLE hOut;
-	COORD Position;
-	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	Position.X = 0;
-	Position.Y = 0;
-	SetConsoleCursorPosition(hOut, Position);
 }

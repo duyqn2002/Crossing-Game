@@ -1,5 +1,4 @@
-﻿#include "CVEHICLE.h"
-#include "CANIMAL.h"
+﻿
 
 #ifndef CPEOPLE_H
 #define CPEOPLE_H
@@ -7,7 +6,10 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+
 #include "HelpFunctions.h"
+#include "CVEHICLE.h"
+#include "CANIMAL.h"
 
 using namespace std;
 
@@ -28,16 +30,17 @@ public:
 	int getHeight() const;
 	int getWidth() const;
 
+	void Clip(int&, int&);
 	// Moving function
 	void Up(int);
 	void Left(int);
 	void Right(int);
 	void Down(int);
-	void Move(DIRECTION);
+	void Move(DIRECTION, int);
 
 	// Check impact
-	bool isImpact(const CVEHICLE*&);
-	bool isImpact(const CANIMAL*&);
+	bool isImpact(const vector<CVEHICLE>&);
+	bool isImpact(const vector<CANIMAL>&);
 
 	// Handle the event
 	bool isFinish();

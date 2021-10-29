@@ -5,7 +5,7 @@
 
 class CCAR : public CVEHICLE {
 public:
-
+	CCAR();
 };
 
 

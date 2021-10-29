@@ -21,6 +21,21 @@ void CVEHICLE::setRight(int desX) {
 	mRight = desX;
 }
 
+int CVEHICLE::getX() const {
+	return mCurrPos.getX();
+}
+
+int CVEHICLE::getY() const {
+	return mCurrPos.getY();
+}
+
+int CVEHICLE::Width() const {
+	return mWidth;
+}
+int CVEHICLE::Height() const {
+	return mHeight;
+}
+
 void CVEHICLE::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
@@ -93,6 +108,7 @@ void CVEHICLE::drawVehicle() const {
 		sstream << mVehicleRightForm;
 	}
 
+	TextColor(mVehicleColour);
 	while (getline(sstream, tempStr, '\n')) {
 		GotoXY(x + startChar, y + line++);
 		cout << tempStr.substr(startChar, nChar);
