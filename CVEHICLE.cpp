@@ -8,7 +8,7 @@ void CVEHICLE::setXY(int x, int y) {
 	mCurrPos.setXY(x, y);
 }
 
-void CVEHICLE::setStartPosX(int startX) {
+void CVEHICLE::setStartPosX(int startX) {	
 	mStartPosX = startX;
 	mCurrPos.setX(startX);
 }
@@ -40,25 +40,25 @@ void CVEHICLE::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
-void CVEHICLE::eraseVehicleHead() const {
-	int line = 0;
-	int x = mCurrPos.getX();
-	int y = mCurrPos.getY();
-	while (line < mHeight) {
-		GotoXY(x, y + line++);
-		cout << " ";
+	void CVEHICLE::eraseVehicleHead() const {
+		int line = 0;
+		int x = mCurrPos.getX();
+		int y = mCurrPos.getY();
+		while (line < mHeight) {
+			GotoXY(x, y + line++);
+			cout << " ";
+		}
 	}
-}
 
-void CVEHICLE::eraseVehicleTail() const {
-	int line = 0;
-	int x = mCurrPos.getX() + mWidth;
-	int y = mCurrPos.getY();
-	while (line < mHeight) {
-		GotoXY(x, y + line++);
-		cout << " ";
+	void CVEHICLE::eraseVehicleTail() const {
+		int line = 0;
+		int x = mCurrPos.getX() + mWidth;
+		int y = mCurrPos.getY();
+		while (line < mHeight) {
+			GotoXY(x, y + line++);
+			cout << " ";
+		}
 	}
-}
 
 void CVEHICLE::eraseOldVehicle() const {
 	switch (mMovingDirection)

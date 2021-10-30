@@ -4,7 +4,7 @@
 #include "CPEOPLE.h"
 #include "CTRUCK.h"
 #include "CCAR.h"
-
+#include"CANIMAL.h"
 class CGAME {
 	static CGAME* m_pGame;
 	vector <pair<float,vector<CVEHICLE*>>>m_vecLanes;

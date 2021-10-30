@@ -46,6 +46,9 @@ constexpr char LANE_ROAD = char(196);
 #define LANE_COLOUR COLOUR::CYAN
 #define PEOPLE_COLOUR COLOUR::RED
 #define TRUCK_COLOUR COLOUR::PINK
+#define DOG_COLOUR   COLOUR::GREEN
+#define BIRD_COLOUR  COLOUR:: RED
+
 
 enum class DIRECTION : char {
 	UP = 'W',
