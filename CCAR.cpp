@@ -13,15 +13,12 @@ CCAR::CCAR()
 						"(   _    _ _ \\\n"
 						"   =`-()--()-'";*/
 
-
 	mVehicleRightForm = "  _____       \n"
 					    " /|_||_\\..__  \n"
 					    "(`  _  _ _   \\\n"
 						"   ='-()--()-'";
 
-	mHeight = GetHeightAsciiArt(mVehicleLeftForm);
-	mWidth = GetWidthAsciiArt(mVehicleLeftForm);
-	/*mHeight = GetHeightAsciiArt(mVehicleRightForm);
-	mWidth = GetWidthAsciiArt(mVehicleRightForm);*/
-	mMovingDirection = DIRECTION::RIGHT;
+	mHeight = mVehicleLeftForm.Height();
+	mWidth = mVehicleLeftForm.Width();
+
 }

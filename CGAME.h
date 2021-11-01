@@ -1,17 +1,30 @@
 ﻿#ifndef CGAME_H
 #define CGAME_H
 
+#include "Console.h"
 #include "CPEOPLE.h"
 #include "CTRUCK.h"
 #include "CCAR.h"
-#include"CANIMAL.h"
-class CGAME {
-	static CGAME* m_pGame;
-	vector <pair<float,vector<CVEHICLE*>>>m_vecLanes;
 
-	// Game object
-	vector<CTRUCK> m_vecTrucks;
-	vector<CCAR> m_vecCars;
+class CGAME {
+private:
+	static CGAME* m_pGame;
+	Console m_Console;
+	vector<pair<float, string>> m_vecLanes = {
+		{0.0f,"p"},
+		{1.0f,"a"},
+		{1.0f,"a"},
+		{1.0f,"a"},
+		{2.0f,"a"},
+		{1.0f,"p"},
+		{3.0f,"c"},
+		{1.0f,"t"},
+		{4.0f,"c"},
+		{1.0f,"c"},
+		{1.0f,"c"},
+		{0.0f,"p"},
+	};
+	vector<pair<int,vector<CVEHICLE*>>>m_vecVehicles;
 
 	// Player
 	CPEOPLE mPeople;
@@ -23,10 +36,10 @@ class CGAME {
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
 public:
 	static CGAME* getGame();
-	CGAME(const CGAME&) {};
 	~CGAME() = default; // Hủy tài nguyên đã cấp phát
 
 	// Post process
+	void setLanes();
 	void setPeople();
 	void setPlayingArea();
 
@@ -34,11 +47,10 @@ public:
 	vector<CVEHICLE> getVehicles() const; // Lấy danh sách các xe
 	vector<CANIMAL> getAnimals() const; // Lấy danh sách các thú
 
-	void drawPeopleSafeLane(int, int, int, int) const;
-	void drawPlayingArea() const; // Vẽ khu vực chơi
-	void drawVehicles() const; // Vẽ xe
-	void drawAnimals(); // Vẽ thú
-	void drawGame() const; // Thực hiện vẽ trò chơi ra màn hình sau khi có dữ liệu
+	void drawPlayingArea() ; // Vẽ khu vực chơi
+	void drawVehicles() ; // Vẽ xe
+	void drawAnimals() ; // Vẽ thú
+	void drawGame() ; // Thực hiện vẽ trò chơi ra màn hình sau khi có dữ liệu
 
 	void resetGame(); // Thực hiện thiết lập lại toàn bộ dữ liệu như lúc đầu
 	void startGame(); // Thực hiện bắt đầu vào trò chơi

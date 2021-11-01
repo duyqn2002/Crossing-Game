@@ -11,8 +11,13 @@ CTRUCK::CTRUCK() {
 						"|________|-|____| \n"
 				   	    "  O   O      O   ";
 
-	mHeight = GetHeightAsciiArt(mVehicleLeftForm);
-	mWidth = GetWidthAsciiArt(mVehicleLeftForm);
+	mHeight = mVehicleLeftForm.Height();
+	mWidth = mVehicleLeftForm.Width();
 
 	mVehicleColour = TRUCK_COLOUR;
+}
+
+CTRUCK::CTRUCK(int x, int y, int left, int right) : CTRUCK() {
+	setXY(x, y);
+	setLimit(left, right);
 }

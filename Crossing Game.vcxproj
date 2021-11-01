@@ -142,6 +142,7 @@
     <ClCompile Include="CANIMAL.cpp" />
     <ClCompile Include="CCAR.cpp" />
     <ClCompile Include="CGAME.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="CPEOPLE.cpp" />
     <ClCompile Include="CPOINT2D.cpp" />
     <ClCompile Include="CScoreBoard.cpp" />
@@ -149,11 +150,13 @@
     <ClCompile Include="CVEHICLE.cpp" />
     <ClCompile Include="HelpFunctions.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CANIMAL.h" />
     <ClInclude Include="CCAR.h" />
     <ClInclude Include="CGAME.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="CPEOPLE.h" />
     <ClInclude Include="CPOINT2D.h" />
@@ -161,6 +164,7 @@
     <ClInclude Include="CTRUCK.h" />
     <ClInclude Include="CVEHICLE.h" />
     <ClInclude Include="HelpFunctions.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="text.txt" />

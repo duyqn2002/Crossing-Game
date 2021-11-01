@@ -1,50 +1,49 @@
 #ifndef CANIMAL_H
 #define CANIMAL_H
-#include "HelpFunctions.h"
-#include"CPOINT2D.h"
 
+#include "CPOINT2D.h"
+#include "Console.h"
 
 class CANIMAL {
 protected:
+	// Current position
 	CPOINT2D mCurrPos;
-	int mStartPosX = 0;
 
-	int mLeft = 0;
-	int mRight = 0;
-
+	// Width and height of vehicle
 	int mHeight = 0;
 	int mWidth = 0;
 
-	DIRECTION mMovingDirection;
-	string mAnimalLeftForm;
-	string mAnimalRightForm;
-	COLOUR mAnimalColour = DEFAULT_COLOUR;
+	// Limit left and right X
+	int mLeft = 0;
+	int mRight = 0;
 
+	int mSpeed;
+	Texture mAnimalLeftForm;
+	Texture mAnimalRightForm;
+
+	COLOUR mAnimalColour = DEFAULT_COLOUR;
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
-	void reset();
 
+	void ResetPos();
+
+	// Setter
 	void setXY(int, int);
-	void setStartPosX(int);
-	void setLeft(int);
-	void setRight(int);
+	void setLimit(int, int);
+	void setSpeed(int);
 
+	// Getter
 	int getX() const;
 	int getY() const;
-
 	int Width() const;
 	int Height() const;
 
 	virtual void Move(int, int);
-	virtual void eraseAnimalHead() const;
-	virtual void eraseAnimalTail() const;
-	virtual void eraseOldAnimal() const;
-	virtual void drawAnimal() const;
+	virtual void updatePos();
 
-	virtual bool isOutSide() const;
-	virtual void updatePos(int);
-
+	// Render method
+	virtual void drawVehicle(const Console&) const;
 };
 
 #endif // CANIMAL_H

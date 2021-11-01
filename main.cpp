@@ -1,10 +1,8 @@
 ﻿#include "CGAME.h"
-#include "CCAR.h"
 
 DIRECTION MOVING;
 CGAME* game;
 double FPS = 1000 / 60;
-
 
 int inputKey()
 {
@@ -43,7 +41,7 @@ void menu() {
 				system("cls");
 				//map.printBorder();
 				for (int i = 0; i < 4; i++) {
-					GotoXY(x, y + i);
+					//GotoXY(x, y + i);
 					if (i == pos)
 					{
 						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
@@ -57,13 +55,13 @@ void menu() {
 
 				//TextColor(7);
 
-				string street = "                                            \n"
-					"           | |               | |                        | |\n"
-					"        ___| |_ _ __ ___  ___| |_    _ __ ___   __ _  __| |\n"
-					"       / __| __| '__/ _ \\/ _ \\ __|  | '__/ _ \\ / _` |/ _` |\n"
-					"       \\__ \\ |_| | |  __/  __/ |_   | | | (_) | (_| | (_| |\n"
-					"       |___/\\__|_|  \\___|\\___|\\__|  |_|  \\___/ \\__,_|\\__,_|\n";
-				GotoXY(17, 5);
+				string street = "                                                     \n"
+					"     | |               | |                        | |\n"
+					"  __| | _ _ __  __| |    _ _ __   __ _  __| |\n"
+					" / __| __| '__/ _ \\/ _ \\ __|  | '__/ _ \\ / _ |/ _ |\n"
+					" \\__ \\ |_| | |  _/  __/ |   | | | (_) | (_| | (_| |\n"
+					" |___/\\__|_|  \\___|\\___|\\__|  |_|  \\___/ \\__,_|\\__,_|\n";
+				//GotoXY(17, 5);
 				cout << street;
 			}
 			//cout << street;
@@ -118,7 +116,7 @@ void renderGameThread() {
 		if (!game->getPeople().isDead()) {
 			game->updatePosPeople(MOVING);
 		}
-		MOVING = (DIRECTION)' ';
+		MOVING = DIRECTION::STAND_STILL;
 		game->updatePosVehicle();
 		game->drawGame();
 		Sleep(FPS);
@@ -127,11 +125,9 @@ void renderGameThread() {
 
 int main() {
 	int temp;
-	ConstructConsole(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
-	//ResizeConsoleAndCenterConsole(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT);
-	//menu();
 	game = CGAME::getGame();
 	game->startGame();
+
 	thread renderGame(renderGameThread);
 	while (true) {
 		temp = toupper(_getch());
@@ -149,6 +145,5 @@ int main() {
 			}
 		}
 	}
-	system("pause");
 	return 0;
 }

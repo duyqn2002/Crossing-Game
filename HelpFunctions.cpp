@@ -1,70 +1,6 @@
 #include "HelpFunctions.h"
 
-void FixConsoleWindow() {
-	HWND consoleWindow = GetConsoleWindow();
-	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
-	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
-	SetWindowLong(consoleWindow, GWL_STYLE, style);
-}
-
-void ShowCursorConsole(bool isVisible) {
-	// Source: https://stackoverflow.com/a/30126700
-	HANDLE consoleHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = isVisible;
-	SetConsoleCursorInfo(consoleHandle, &info);
-}
-
-void ConstructConsole(int width, int height, int fontw, int fonth)
-{
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-
-	SMALL_RECT rectWindow = { 0, 0, 1, 1 };
-	SetConsoleWindowInfo(hConsole, TRUE, &rectWindow);
-
-	// Set the screen buffer size
-	COORD coord = { (short)width, (short)height };
-	if (!SetConsoleScreenBufferSize(hConsole, coord))
-		return;
-
-	// Assign screen buffer to the console
-	if (!SetConsoleActiveScreenBuffer(hConsole))
-		return;
-
-	// Set the font width and font height of console
-	CONSOLE_FONT_INFOEX cfi;
-	cfi.cbSize = sizeof(cfi);
-	cfi.nFont = 0;
-	cfi.dwFontSize.X = fontw;
-	cfi.dwFontSize.Y = fonth;
-
-	if (!SetCurrentConsoleFontEx(hConsole, false, &cfi))
-		return;
-
-	// Check if valid width and height
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if (!GetConsoleScreenBufferInfo(hConsole, &csbi))
-		return;
-	if (height > csbi.dwMaximumWindowSize.Y)
-		return;
-	if (width > csbi.dwMaximumWindowSize.X)
-		return;
-
-	// Set the console width and height
-	rectWindow = { 0, 0, (short)width - 1, (short)height - 1 };
-	if (!SetConsoleWindowInfo(hConsole, TRUE, &rectWindow))
-		return;
-
-	// No resize window
-	FixConsoleWindow();
-
-	// Hide the cursor
-	ShowCursorConsole(false);
-}
-
 void CenterConsole(int width, int height) {
-	// 
 	HWND hConsoleWnd = GetConsoleWindow();
 	HMONITOR hMonitor = MonitorFromWindow(hConsoleWnd, MONITOR_DEFAULTTONEAREST);
 
@@ -81,42 +17,26 @@ void CenterConsole(int width, int height) {
 				SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOSIZE);
 		}
 	}
-
-	//MoveWindow(console, r.left, r.top, width, height, TRUE);
 }
 
-void GotoXY(int x, int y) {
+void GotoXY(int x, int y)  {
 	COORD coord;
 	coord.X = (short)x;
 	coord.Y = (short)y;
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
 
-int GetHeightConsoleWindowBuffer() {
-	int height = 0;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
 
-	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-	{
-		height = csbi.srWindow.Bottom - csbi.srWindow.Left;
-	}
+void SetConsoleGameTitle(string title) {
+	if (title.size() != 0)
+		title = "title " + title;
+	else
+		title = "title Console";
 
-	return height;
+	system(title.c_str());
 }
 
-int GetWidthConsoleWindowBuffer() {
-	int width = 0;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi))
-	{
-		width = csbi.srWindow.Right - csbi.srWindow.Left;
-	}
-
-	return width;
-}
-
-int GetWidthAsciiArt(string art) {
+int GetWidthAsciiArt(const string& art) {
 	int lengthStr = (int)art.length();
 	int width = 0;
 	int count = 0;
@@ -134,7 +54,7 @@ int GetWidthAsciiArt(string art) {
 	return width;
 }
 
-int GetHeightAsciiArt(string art) {
+int GetHeightAsciiArt(const string& art) {
 	stringstream sstream(art);
 	string temp;
 	int height = 0;

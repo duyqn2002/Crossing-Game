@@ -1,36 +1,49 @@
-﻿
-
-#ifndef CPEOPLE_H
+﻿#ifndef CPEOPLE_H
 #define CPEOPLE_H
 
-#include <string>
-#include <iostream>
-#include <sstream>
-
 #include "HelpFunctions.h"
+#include "Console.h"
 #include "CVEHICLE.h"
 #include "CANIMAL.h"
 
-using namespace std;
-
 class CPEOPLE{
+private:
+	// Current position 2D
 	CPOINT2D mCurrPos;
-	CPOINT2D mTopLeft, mBottomRight; // Limit zone
-	int mHeight, mWidth;
-	bool mState; // State of alive
-	string mPeopleRightForm;
-	string mPeopleLeftForm;
+
+	// Limit zone
+	CPOINT2D mTopLeft;
+	CPOINT2D mBottomRight;
+
+	// Height and width of people
+	int mHeight;
+	int mWidth;
+
+	// State of alive
+	bool mState;
+
+	// People form in ascii
+	Texture mPeopleRightForm;
+	Texture mPeopleLeftForm;
+
+	// Moving Direction
 	DIRECTION mMovingDirection;
 
 public:
 	CPEOPLE();
+	CPEOPLE(int, int);
+	CPEOPLE(int, int, CPOINT2D, CPOINT2D);
+	~CPEOPLE() = default;
+
+	// Setter
 	void setXY(int, int);
 	void setLimitZone(CPOINT2D, CPOINT2D);
 
-	int getHeight() const;
-	int getWidth() const;
+	// Getter
+	int Height() const;
+	int Width() const;
+	CPOINT2D GetPosition() const;
 
-	void Clip(int&, int&);
 	// Moving function
 	void Up(int);
 	void Left(int);
@@ -42,14 +55,15 @@ public:
 	bool isImpact(const vector<CVEHICLE>&);
 	bool isImpact(const vector<CANIMAL>&);
 
+	// Don't let the people go outside the playing area
+	void Clip();
+
 	// Handle the event
-	bool isFinish();
-	bool isDead();
-	bool isHitLimit(DIRECTION);
+	bool isFinish() const;
+	bool isDead() const;
 
 	// Render people function
-	void eraseTraceOfPeople();
-	void drawPeople() const;
+	void drawPeople(const Console&) const;
 };
 
 #endif // CPEOPLE_H

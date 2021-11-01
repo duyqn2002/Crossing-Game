@@ -16,19 +16,19 @@
 using namespace std;
 
 // Default setting for game
-constexpr short WINDOW_BUFFER_HEIGHT = 52;
+constexpr short WINDOW_BUFFER_HEIGHT = 50;
 constexpr short WINDOW_BUFFER_WIDTH = 150;
 constexpr short FONT_HEIGHT = 12;
 constexpr short FONT_WIDTH = 12;
-constexpr short MAX_LANE = 10;
-constexpr int LANE_SIZE = 4;
+constexpr short MAX_LANE = 12;
+constexpr short LANE_SIZE = 4;
 
 // Position of top left corner of playing area
 constexpr short TOP_LEFT_X = 0;
 constexpr short TOP_LEFT_Y = 0;
 
 // Scale of the playing area
-constexpr float SCALE_X = 0.65;
+constexpr float SCALE_X = 0.65f;
 constexpr float SCALE_Y = 1;
 
 // Border char
@@ -49,12 +49,12 @@ constexpr char LANE_ROAD = char(196);
 #define DOG_COLOUR   COLOUR::GREEN
 #define BIRD_COLOUR  COLOUR:: RED
 
-
 enum class DIRECTION : char {
 	UP = 'W',
 	DOWN = 'S',
 	LEFT = 'A',
-	RIGHT = 'D'
+	RIGHT = 'D',
+	STAND_STILL = ' '
 };
 
 enum class COLOUR : int {
@@ -69,6 +69,10 @@ enum class Level {
 	EASY,
 	MEDIUM,
 	HARD
+};
+
+enum class KEY {
+	// Mot so nut bam nhu esc, pause game
 };
 
 #endif // CONSTANTS_H

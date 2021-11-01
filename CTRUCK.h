@@ -6,7 +6,7 @@
 class CTRUCK : public CVEHICLE {
 public:
 	CTRUCK();
-	//void drawVehicle() const override;
+	CTRUCK(int, int, int, int);
 };
 
 #endif // CTRUCK_H
