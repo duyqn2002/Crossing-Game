@@ -1,8 +1,5 @@
 #include "Texture.h"
 
-Texture::Texture() {
-}
-
 Texture::Texture(const string& body) {
 	stringstream sstream(body);
 	string temp;
@@ -22,11 +19,22 @@ Texture::Texture(const Texture& other) {
 	mWidth = other.mWidth;
 }
 
+Texture& Texture::operator= (const Texture& other) {
+	if (this == &other) {
+		m_vecBody = other.m_vecBody;
+
+		mHeight = other.mHeight;
+		mWidth = other.mWidth;
+	}
+	return *this;
+}
+
 Texture& Texture::operator= (const char* body) {
 	stringstream sstream(body);
 	string temp;
 	while (getline(sstream, temp, '\n'))
 	{
+		temp;
 		m_vecBody.push_back(temp);
 	}
 
@@ -36,6 +44,8 @@ Texture& Texture::operator= (const char* body) {
 }
 
 void Texture::AddString(const string& part) {
+	if (mWidth != part.size())
+		return;
 	m_vecBody.push_back(part);
 	mHeight += 1;
 }
@@ -45,7 +55,7 @@ int Texture::Height() const{
 }
 
 int Texture::Width() const{
-	return mHeight;
+	return mWidth;
 }
 
 vector<string> Texture::GetTexture() const{

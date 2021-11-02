@@ -1,6 +1,7 @@
 ﻿#ifndef CGAME_H
 #define CGAME_H
 
+#include "HelpFunctions.h"
 #include "Console.h"
 #include "CPEOPLE.h"
 #include "CTRUCK.h"
@@ -24,7 +25,10 @@ private:
 		{1.0f,"c"},
 		{0.0f,"p"},
 	};
+
 	vector<pair<int,vector<CVEHICLE*>>>m_vecVehicles;
+	vector<pair<int, vector<CANIMAL*>>>m_vecAnimals;
+
 
 	// Player
 	CPEOPLE mPeople;
@@ -32,6 +36,8 @@ private:
 	// Playing area setting
 	CPOINT2D mTopLeft;
 	CPOINT2D mBottomRight;
+
+	bool mIsRunning;
 
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
 public:
@@ -44,8 +50,8 @@ public:
 	void setPlayingArea();
 
 	CPEOPLE getPeople() const; // Lấy thông tin người
-	vector<CVEHICLE> getVehicles() const; // Lấy danh sách các xe
-	vector<CANIMAL> getAnimals() const; // Lấy danh sách các thú
+	vector<CVEHICLE*> getVehicles() const; // Lấy danh sách các xe
+	vector<CANIMAL*> getAnimals() const; // Lấy danh sách các thú
 
 	void drawPlayingArea() ; // Vẽ khu vực chơi
 	void drawVehicles() ; // Vẽ xe
@@ -65,6 +71,8 @@ public:
 	void updatePosPeople(DIRECTION); // Thực hiện điều khiển di chuyển của CPEOPLE
 	void updatePosVehicle(); // Thực hiện cho CTRUCK & CCAR di chuyển
 	void updatePosAnimal(); // Thực hiện cho CDINAUSOR & CBIRD di chuyển
+
+	bool isRunning() const;
 };
 
 #endif // CGAME_H

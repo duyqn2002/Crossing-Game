@@ -3,18 +3,18 @@
 CPEOPLE::CPEOPLE() {
 	mState = true;
 
+	mPeopleLeftForm = "\\o~\n"
+		" |\\\n"
+		"/ \\";
+
 	mPeopleRightForm = "~o/\n"
 		"/| \n"
 		"/ \\";
 
-	mPeopleLeftForm = "\\o~\n"
-					" |\\\n"
-					"/ \\";
-
 	mHeight = mPeopleLeftForm.Height();
 	mWidth = mPeopleLeftForm.Width();
 
-	mMovingDirection = RandomInt(2, 0) ? DIRECTION::LEFT : DIRECTION::RIGHT; // Randomly start direction
+	mCurrForm = &mPeopleLeftForm;
 }
 
 CPEOPLE::CPEOPLE(int x, int y) : CPEOPLE() {
@@ -23,6 +23,52 @@ CPEOPLE::CPEOPLE(int x, int y) : CPEOPLE() {
 
 CPEOPLE::CPEOPLE(int x, int y, CPOINT2D topLeft, CPOINT2D bottomRight) : CPEOPLE(x, y) {
 	setLimitZone(topLeft, bottomRight);
+}
+
+CPEOPLE::CPEOPLE(const CPEOPLE& other) {
+	mCurrPos = other.mCurrPos;
+
+	mTopLeft = other.mTopLeft;
+	mBottomRight = other.mBottomRight;
+
+	mState = other.mState;
+
+	mPeopleLeftForm = other.mPeopleLeftForm;
+
+	mPeopleRightForm = other.mPeopleRightForm;
+
+	mHeight = other.mHeight;
+	mWidth = other.mWidth;
+
+	if(other.mCurrForm == &other.mPeopleLeftForm)
+		mCurrForm = &mPeopleLeftForm;
+	else
+		mCurrForm = &mPeopleRightForm;
+}
+
+CPEOPLE& CPEOPLE::operator= (const CPEOPLE& other) {
+	if (this != &other) {
+		mCurrPos = other.mCurrPos;
+
+		mTopLeft = other.mTopLeft;
+		mBottomRight = other.mBottomRight;
+
+		mState = other.mState;
+
+		mPeopleLeftForm = other.mPeopleLeftForm;
+
+		mPeopleRightForm = other.mPeopleRightForm;
+
+		mHeight = other.mHeight;
+		mWidth = other.mWidth;
+
+		if (other.mCurrForm == &other.mPeopleLeftForm)
+			mCurrForm = &mPeopleLeftForm;
+		else
+			mCurrForm = &mPeopleRightForm;
+	}
+
+	return *this;
 }
 
 void CPEOPLE::setXY(int x, int y) {
@@ -43,9 +89,10 @@ int CPEOPLE::Width() const {
 	return mWidth;
 }
 
-CPOINT2D CPEOPLE::GetPosition() const {
+CPOINT2D CPEOPLE::getPosition() const {
 	return mCurrPos;
 }
+
 
 void CPEOPLE::Clip() {
 	int currX = mCurrPos.getX();
@@ -77,12 +124,10 @@ void CPEOPLE::Up(int delta) {
 
 void CPEOPLE::Left(int delta) {
 	mCurrPos.moveX(-delta);
-	mMovingDirection = DIRECTION::LEFT;
 }
 
 void CPEOPLE::Right(int delta) {
 	mCurrPos.moveX(delta);
-	mMovingDirection = DIRECTION::RIGHT;
 }
 
 void CPEOPLE::Down(int delta) {
@@ -105,14 +150,18 @@ void CPEOPLE::Move(DIRECTION direction, int delta) {
 
 	case DIRECTION::LEFT:
 		Left(mWidth);
+		mCurrForm = &mPeopleLeftForm;
 		break;
 
 	case DIRECTION::RIGHT:
 		Right(mWidth);
+		mCurrForm = &mPeopleRightForm;
 		break;
 	default:
 		return;
 	}
+	mHeight = mCurrForm->Height();
+	mWidth = mCurrForm->Width();
 	Clip();
 }
 
@@ -139,15 +188,5 @@ void CPEOPLE::drawPeople(const Console& console) const {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 
-	switch (mMovingDirection)
-	{
-	case DIRECTION::LEFT:
-		console.DrawObject(x, y, mPeopleLeftForm,PEOPLE_COLOUR);
-		break;
-	case DIRECTION::RIGHT:
-		console.DrawObject(x, y, mPeopleRightForm, PEOPLE_COLOUR);
-		break;
-	default:
-		break;
-	}
+	console.DrawObject(x, y, *mCurrForm, PEOPLE_COLOUR);
 }

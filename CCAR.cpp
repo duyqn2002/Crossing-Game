@@ -21,4 +21,10 @@ CCAR::CCAR()
 	mHeight = mVehicleLeftForm.Height();
 	mWidth = mVehicleLeftForm.Width();
 
+	mVehicleColour = CAR_COLOUR;
+}
+
+CCAR::CCAR(int x, int y, int left, int right) : CCAR() {
+	setXY(x, y);
+	setLimit(left, right);
 }

@@ -20,18 +20,19 @@ protected:
 	int mSpeed;
 	Texture mAnimalLeftForm;
 	Texture mAnimalRightForm;
+	Texture* mCurrAnimalForm;
 
 	COLOUR mAnimalColour = DEFAULT_COLOUR;
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
 
-	void ResetPos();
 
 	// Setter
 	void setXY(int, int);
 	void setLimit(int, int);
 	void setSpeed(int);
+	void setColour(COLOUR);
 
 	// Getter
 	int getX() const;
@@ -39,7 +40,9 @@ public:
 	int Width() const;
 	int Height() const;
 
+	virtual void toggleForm();
 	virtual void Move(int, int);
+	virtual void resetPos();
 	virtual void updatePos();
 
 	// Render method

@@ -26,7 +26,7 @@ void CGAME::setLanes() {
 		for (int j = 0; j < 1; j++) {
 			int randomX = RandomInt(mBottomRight.getX(), mTopLeft.getX());
 			CVEHICLE* truck = new CTRUCK(0,y, mTopLeft.getX(), mBottomRight.getX());
-			truck->setSpeed(1);
+			truck->setSpeed(-1);
 			vehicleInLane.push_back(truck);
 		}
 		m_vecVehicles.push_back({ y,vehicleInLane });
@@ -59,14 +59,14 @@ CPEOPLE CGAME::getPeople() const {
 	return mPeople;
 }
 
-vector<CVEHICLE> CGAME::getVehicles() const{
-	vector<CVEHICLE> allVehicles;
-	return allVehicles;
+vector<CVEHICLE*> CGAME::getVehicles() const{
+
+
+	return vector<CVEHICLE*>();
 }
 
-vector<CANIMAL> CGAME::getAnimals() const{
-	vector<CANIMAL> allAnimals;
-	return allAnimals;
+vector<CANIMAL*> CGAME::getAnimals() const{
+	return vector<CANIMAL*>();
 }
 
 void CGAME::drawPlayingArea()  {
@@ -139,4 +139,8 @@ void CGAME::updatePosVehicle() {
 }
 
 void CGAME::updatePosAnimal() {
+}
+
+bool CGAME::isRunning() const {
+	return mIsRunning;
 }

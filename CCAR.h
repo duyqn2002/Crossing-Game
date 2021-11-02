@@ -6,6 +6,7 @@
 class CCAR : public CVEHICLE {
 public:
 	CCAR();
+	CCAR(int, int, int, int);
 };
 
 

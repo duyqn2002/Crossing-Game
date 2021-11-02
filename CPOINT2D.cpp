@@ -5,6 +5,19 @@ CPOINT2D::CPOINT2D() {
 	mY = 0;
 }
 
+CPOINT2D::CPOINT2D(const CPOINT2D& other) {
+	mX = other.mX;
+	mY = other.mY;
+}
+
+CPOINT2D& CPOINT2D::operator=(const CPOINT2D& other) {
+	if (this != &other) {
+		mX = other.mX;
+		mY = other.mY;
+	}
+	return *this;
+}
+
 void CPOINT2D::setX(int x) {
 	mX = x;
 }

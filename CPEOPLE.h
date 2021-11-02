@@ -1,7 +1,6 @@
 ﻿#ifndef CPEOPLE_H
 #define CPEOPLE_H
 
-#include "HelpFunctions.h"
 #include "Console.h"
 #include "CVEHICLE.h"
 #include "CANIMAL.h"
@@ -23,17 +22,18 @@ private:
 	bool mState;
 
 	// People form in ascii
-	Texture mPeopleRightForm;
 	Texture mPeopleLeftForm;
-
-	// Moving Direction
-	DIRECTION mMovingDirection;
+	Texture mPeopleRightForm;
+	Texture* mCurrForm;
 
 public:
 	CPEOPLE();
 	CPEOPLE(int, int);
 	CPEOPLE(int, int, CPOINT2D, CPOINT2D);
+	CPEOPLE(const CPEOPLE&);
 	~CPEOPLE() = default;
+
+	CPEOPLE& operator= (const CPEOPLE&);
 
 	// Setter
 	void setXY(int, int);
@@ -42,9 +42,10 @@ public:
 	// Getter
 	int Height() const;
 	int Width() const;
-	CPOINT2D GetPosition() const;
+	CPOINT2D getPosition() const;
 
 	// Moving function
+	void toggleForm();
 	void Up(int);
 	void Left(int);
 	void Right(int);

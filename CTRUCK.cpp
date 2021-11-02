@@ -8,12 +8,13 @@ CTRUCK::CTRUCK() {
 
 	mVehicleRightForm = " ________   __   \n"
 						"|        | |[\\\\_ \n"
-						"|________|-|____| \n"
+						"|________|-|____|\n"
 				   	    "  O   O      O   ";
 
-	mHeight = mVehicleLeftForm.Height();
-	mWidth = mVehicleLeftForm.Width();
+	mHeight = mVehicleRightForm.Height();
+	mWidth = mVehicleRightForm.Width();
 
+	mCurrVehicleForm = nullptr;
 	mVehicleColour = TRUCK_COLOUR;
 }
 
