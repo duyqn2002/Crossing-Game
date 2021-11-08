@@ -22,13 +22,15 @@ constexpr short FONT_HEIGHT = 12;
 constexpr short FONT_WIDTH = 12;
 constexpr short MAX_LANE = 12;
 constexpr short LANE_SIZE = 4;
+constexpr short MAX_VEHICLE = 3;
+constexpr short MAX_ANIMAL = 3;
 
 // Position of top left corner of playing area
 constexpr short TOP_LEFT_X = 0;
 constexpr short TOP_LEFT_Y = 0;
 
 // Scale of the playing area
-constexpr float SCALE_X = 0.65f;
+constexpr float SCALE_X = 0.75f;
 constexpr float SCALE_Y = 1;
 
 // Border char
@@ -42,13 +44,21 @@ constexpr char LANE_ROAD = char(196);
 
 // Constant color for game
 #define DEFAULT_COLOUR COLOUR::WHITE
-#define PLAYING_AREA_COLOUR COLOUR::GREEN
+#define PLAYING_AREA_COLOUR COLOUR::GREEN_BG
 #define LANE_COLOUR COLOUR::CYAN
 #define PEOPLE_COLOUR COLOUR::RED
 #define TRUCK_COLOUR COLOUR::PINK
 #define CAR_COLOUR COLOUR::CYAN
 #define DOG_COLOUR   COLOUR::GREEN
 #define BIRD_COLOUR  COLOUR:: RED
+
+// Macro
+#define INIT_BASE(BASE) std::vector<BASE*> BASE::m_vecSampleObjects;
+#define INIT_MEMBER(BASE_CLASS,CHILD_CLASS) static BASE_CLASS* BootTrapObject##CHILD_CLASS
+#define INIT_OBJECT(BASE_CLASS,CHILD_CLASS) BASE_CLASS* CHILD_CLASS::BootTrapObject##CHILD_CLASS = BASE_CLASS::addSample(new CHILD_CLASS())
+#define INIT_METHOD(BASE_CLASS,CHILD_CLASS) virtual string className() { return #CHILD_CLASS;} \
+									virtual BASE_CLASS* Clone() { return new CHILD_CLASS(*this);}
+
 
 enum class DIRECTION : char {
 	UP = 'W',
@@ -64,12 +74,14 @@ enum class COLOUR : int {
 	RED = 12,
 	PINK = 13,
 	WHITE = 15,
+
+	GREEN_BG = 170,
 };
 
-enum class Level {
-	EASY,
-	MEDIUM,
-	HARD
+enum class LEVEL : int {
+	EASY = 1,
+	MEDIUM = 2,
+	HARD = 3
 };
 
 enum class KEY {

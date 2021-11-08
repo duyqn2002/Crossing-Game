@@ -25,7 +25,6 @@ private:
 	Texture mPeopleLeftForm;
 	Texture mPeopleRightForm;
 	Texture* mCurrForm;
-
 public:
 	CPEOPLE();
 	CPEOPLE(int, int);
@@ -53,8 +52,8 @@ public:
 	void Move(DIRECTION, int);
 
 	// Check impact
-	bool isImpact(const vector<CVEHICLE>&);
-	bool isImpact(const vector<CANIMAL>&);
+	bool isImpact(const vector<CVEHICLE*>&) const;
+	bool isImpact(const vector<CANIMAL*>&) const;
 
 	// Don't let the people go outside the playing area
 	void Clip();

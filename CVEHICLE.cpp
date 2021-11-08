@@ -1,5 +1,33 @@
 #include "CVEHICLE.h"
 
+CVEHICLE* CVEHICLE::addSample(CVEHICLE* vehicle) {
+	if (vehicle == nullptr)
+		return nullptr;
+	m_vecSampleObjects.push_back(vehicle);
+	return vehicle;
+}
+
+CVEHICLE* CVEHICLE::createObject(const string& className) {
+	if (className == "")
+		return nullptr;
+
+	for (auto object : m_vecSampleObjects) {
+		if (object != nullptr && object->className() == className) {
+			return object->Clone();
+		}
+	}
+
+	return nullptr;
+}
+
+void CVEHICLE::setX(int x) {
+	mCurrPos.setX(x);
+}
+
+void CVEHICLE::setY(int y) {
+	mCurrPos.setY(y);
+}
+
 void CVEHICLE::setXY(int x, int y) {
 	mCurrPos.setXY(x, y);
 }
@@ -9,7 +37,7 @@ void CVEHICLE::setLimit(int left, int right) {
 	mRight = right;
 }
 
-void CVEHICLE::setSpeed(int speed) {
+void CVEHICLE::setSpeed(double speed) {
 	mSpeed = speed;
 
 	toggleForm();
@@ -33,6 +61,34 @@ int CVEHICLE::Width() const {
 
 int CVEHICLE::Height() const {
 	return mHeight;
+}
+
+int CVEHICLE::getLeft() const {
+	return mLeft;
+}
+
+int CVEHICLE::getRight() const {
+	return mRight;
+}
+
+int CVEHICLE::getSpeed() const {
+	return mSpeed;
+}
+
+bool CVEHICLE::isImpact(const CVEHICLE& other) const {
+	int thisX = this->getX();
+	int otherX = other.getX();
+
+	if (thisX == otherX)
+		return true;
+
+	if (thisX > otherX && thisX < otherX + mWidth )
+		return true;
+
+	if (thisX < otherX && thisX + mWidth > otherX )
+		return true;
+
+	return false;
 }
 
 void CVEHICLE::toggleForm() {
@@ -74,8 +130,9 @@ void CVEHICLE::drawVehicle(const Console& console) const {
 		for (const auto& c : line) {
 			if (x > mLeft && x < mRight) {
 				// If inside the playing zone then draw it
-				console.Draw(x, y, c, mVehicleColour);
+				console.DrawPixels(x, y, c, mVehicleColour);
 			}
+
 			x++;
 		}
 		x = mCurrPos.getX();

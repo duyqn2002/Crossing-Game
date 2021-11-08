@@ -147,10 +147,10 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CPEOPLE.cpp" />
     <ClCompile Include="CPOINT2D.cpp" />
-    <ClCompile Include="CScoreBoard.cpp" />
     <ClCompile Include="CTRUCK.cpp" />
     <ClCompile Include="CVEHICLE.cpp" />
     <ClCompile Include="HelpFunctions.cpp" />
+    <ClCompile Include="Init_Static.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
@@ -164,10 +164,10 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="CPEOPLE.h" />
     <ClInclude Include="CPOINT2D.h" />
-    <ClInclude Include="CScoreBoard.h" />
     <ClInclude Include="CTRUCK.h" />
     <ClInclude Include="CVEHICLE.h" />
     <ClInclude Include="HelpFunctions.h" />
+    <ClInclude Include="Init_Static.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>

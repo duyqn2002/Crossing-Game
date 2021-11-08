@@ -118,6 +118,7 @@ void renderGameThread() {
 		}
 		MOVING = DIRECTION::STAND_STILL;
 		game->updatePosVehicle();
+		game->updatePosAnimal();
 		game->drawGame();
 		Sleep(FPS);
 	}

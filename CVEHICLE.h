@@ -1,10 +1,12 @@
 #ifndef CVEHICLE_H
 #define CVEHICLE_H
 
-#include "CPOINT2D.h"
 #include "Console.h"
 
 class CVEHICLE {
+private:
+	static vector<CVEHICLE*> m_vecSampleObjects;
+
 protected:
 	// Current position
 	CPOINT2D mCurrPos;
@@ -18,7 +20,7 @@ protected:
 	int mRight = 0;
 
 	// Speed of vehicle
-	int mSpeed;
+	double mSpeed;
 
 	// Vehicle form
 	Texture mVehicleLeftForm;
@@ -27,14 +29,22 @@ protected:
 
 	// Color for vehicle
 	COLOUR mVehicleColour = DEFAULT_COLOUR;
+
 public:
 	CVEHICLE() = default;
 	virtual ~CVEHICLE() = default;
 
+	static CVEHICLE* createObject(const string&);
+
+	virtual string className() = 0;
+	virtual CVEHICLE* Clone() = 0;
+
 	// Setter
+	void setX(int);
+	void setY(int);
 	void setXY(int, int);
 	void setLimit(int, int);
-	void setSpeed(int);
+	void setSpeed(double);
 	void setColour(COLOUR);
 
 	// Getter
@@ -42,14 +52,24 @@ public:
 	int getY() const;
 	int Width() const;
 	int Height() const;
+	int getLeft() const;
+	int getRight() const;
+	int getSpeed() const;
 
-	virtual void toggleForm();
-	virtual void Move(int, int);
-	virtual void resetPos();
-	virtual void updatePos();
+	// Check impact with another vehicle
+	bool isImpact(const CVEHICLE&) const;
+
+	// Update method
+	void toggleForm();
+	void Move(int, int);
+	void resetPos();
+	void updatePos();
 
 	// Render method
-	virtual void drawVehicle(const Console&) const;
+	void drawVehicle(const Console&) const;
+
+protected:
+	static CVEHICLE* addSample(CVEHICLE*);
 };
 
 #endif // CVEHICLE_H

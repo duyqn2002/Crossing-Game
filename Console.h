@@ -1,14 +1,18 @@
-#ifndef CONSOLE
-#define CONSOLE
+#ifndef CONSOLE_H
+#define CONSOLE_H
 
 #include <Windows.h>
-#include "CPOINT2D.h"
+
 #include "Constants.h"
+#include "CPOINT2D.h"
 #include "Texture.h"
 
+// Apply double buffering to render console game
 class Console {
 private:
-	bool m_bSwitcher;
+	unsigned int mHeight;
+	unsigned int mWidth;
+
 	HANDLE m_hScreenBufferOne;
 	HANDLE m_hScreenBufferTwo;
 	HANDLE* m_hActiveScreenBuffer;
@@ -17,19 +21,18 @@ public:
 	Console();
 	Console(unsigned int, unsigned int);
 	Console(unsigned int, unsigned int, unsigned int, unsigned int);
+	Console(const Console&);
 	~Console();
-
-	void FixedConsoleWindow() const;
-	void ShowCursorConsole(bool) const;
-	void GotoXY(int, int) const;
 
 	unsigned int Height() const;
 	unsigned int Width() const;
 
-	void Draw(int, int, char, COLOUR = COLOUR::WHITE, int = 1) const;
-	void DrawBorder(CPOINT2D, CPOINT2D, COLOUR = COLOUR::WHITE);
+	void FixedConsoleWindow() const;
+	void DrawPixels(int, int, char, COLOUR = COLOUR::WHITE, int = 1) const;
+	void DrawBorder(CPOINT2D, CPOINT2D, COLOUR = COLOUR::WHITE) const;
 	void DrawObject(int, int, const Texture&, COLOUR = COLOUR::WHITE) const;
 	void ClearScreen() const;
 	void Render();
 };
-#endif // !CONSOLE
+
+#endif // CONSOLE_H

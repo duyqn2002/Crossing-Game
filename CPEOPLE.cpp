@@ -5,10 +5,12 @@ CPEOPLE::CPEOPLE() {
 
 	mPeopleLeftForm = "\\o~\n"
 		" |\\\n"
+		" | \n"
 		"/ \\";
 
 	mPeopleRightForm = "~o/\n"
 		"/| \n"
+		" | \n"
 		"/ \\";
 
 	mHeight = mPeopleLeftForm.Height();
@@ -162,14 +164,15 @@ void CPEOPLE::Move(DIRECTION direction, int delta) {
 	}
 	mHeight = mCurrForm->Height();
 	mWidth = mCurrForm->Width();
+
 	Clip();
 }
 
-bool CPEOPLE::isImpact(const vector<CVEHICLE>& allVehicles) {
+bool CPEOPLE::isImpact(const vector<CVEHICLE*>& vehiclesOnLane) const{
 	return false;
 }
 
-bool CPEOPLE::isImpact(const vector<CANIMAL>&) {
+bool CPEOPLE::isImpact(const vector<CANIMAL*>& animalsOnLane) const{
 	return false;
 }
 

@@ -1,24 +1,32 @@
 #include "Console.h"
 
 Console::Console() {
-	m_bSwitcher = false;
 	m_hScreenBufferOne = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	m_hScreenBufferTwo = CreateConsoleScreenBuffer(GENERIC_READ | GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	m_hActiveScreenBuffer = &m_hScreenBufferOne;
 	m_hBackgroundScreenBuffer = &m_hScreenBufferTwo;
+
+	mHeight = 1;
+	mWidth = 1;
 }
 
-Console::Console(unsigned int width, unsigned int height) : Console(){
+Console::Console(unsigned int width, unsigned int height) : Console() {
+	// Construct a console window with height and width
 	SMALL_RECT rectWindow = { 0 ,0, width, height };
 
 	SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow);
 	SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow);
+
+	mHeight = height;
+	mWidth = width;
+
+	FixedConsoleWindow();
 }
 
-Console::Console(unsigned int width, unsigned int height,unsigned int fontw, unsigned int fonth) : Console(width,height) {
-	SMALL_RECT rectWindow;
+Console::Console(unsigned int width, unsigned int height, unsigned int fontw, unsigned int fonth) : Console(width, height) {
+	// Construct a console window with height and width, font width and font height
 
-	//// Set the screen buffer size
+	// Set the screen buffer size
 	COORD coord = { (short)width, (short)height };
 	if (!SetConsoleScreenBufferSize(m_hScreenBufferOne, coord))
 		return;
@@ -47,106 +55,114 @@ Console::Console(unsigned int width, unsigned int height,unsigned int fontw, uns
 		return;
 
 	// Set the console width and height
-	rectWindow = { 0, 0, (short)width - 1, (short)height - 1 };
+	SMALL_RECT rectWindow = { 0, 0, (short)width - 1, (short)height - 1 };
 	if (!SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow))
 		return;
 	if (!SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow))
 		return;
-
-	FixedConsoleWindow();
-	ShowCursorConsole(false);
 }
 
-Console::~Console() {}
+Console::Console(const Console& other) {
+	mHeight = other.mHeight;
+	mWidth = other.mWidth;
 
-void Console::FixedConsoleWindow() const{
+	m_hScreenBufferOne = other.m_hScreenBufferOne;
+	m_hScreenBufferTwo = other.m_hScreenBufferTwo;
+
+	if (other.m_hActiveScreenBuffer == &other.m_hScreenBufferOne) {
+		m_hActiveScreenBuffer = &m_hScreenBufferOne;
+		m_hBackgroundScreenBuffer = &m_hScreenBufferTwo;
+	}
+	else {
+		m_hActiveScreenBuffer = &m_hScreenBufferTwo;
+		m_hBackgroundScreenBuffer = &m_hScreenBufferOne;
+	}
+}
+
+Console::~Console() {
+	m_hActiveScreenBuffer = nullptr;
+	m_hBackgroundScreenBuffer = nullptr;
+}
+
+unsigned int Console::Height() const {
+	return mHeight;
+}
+
+unsigned int Console::Width() const {
+	return mWidth;
+}
+
+void Console::FixedConsoleWindow() const {
 	HWND consoleWindow = GetConsoleWindow();
 	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
 
-void Console::ShowCursorConsole(bool isVisible) const{
-	// Source: https://stackoverflow.com/a/30126700
-	CONSOLE_CURSOR_INFO info;
-	info.dwSize = 100;
-	info.bVisible = isVisible;
-	SetConsoleCursorInfo(*m_hBackgroundScreenBuffer, &info);
-}
-
-void Console::GotoXY(int x,int y) const{
+void Console::DrawPixels(int x, int y, char c, COLOUR color, int nChar) const {
+	// Draw one or nChar pixel
+	DWORD written;
 	COORD coord;
+
 	coord.X = (short)x;
 	coord.Y = (short)y;
-	SetConsoleCursorPosition(*m_hBackgroundScreenBuffer, coord);
+
+	FillConsoleOutputCharacterA(*m_hBackgroundScreenBuffer, c, nChar, coord, &written);
+	FillConsoleOutputAttribute(*m_hBackgroundScreenBuffer, (int)color, nChar, coord, &written);
 }
 
-unsigned int Console::Height() const {
-	unsigned int height = 0;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if (GetConsoleScreenBufferInfo(*m_hActiveScreenBuffer, &csbi))
-	{
-		height = csbi.srWindow.Bottom - csbi.srWindow.Left;
-	}
-
-	return height;
-}
-
-unsigned int Console::Width() const {
-	unsigned int width = 0;
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-	if (GetConsoleScreenBufferInfo(*m_hActiveScreenBuffer, &csbi))
-	{
-		width = csbi.srWindow.Right - csbi.srWindow.Left;
-	}
-
-	return width;
-}
-
-void Console::Draw(int x, int y, char c, COLOUR color,int nChar) const{
-	DWORD written;
-	FillConsoleOutputCharacterA(*m_hBackgroundScreenBuffer, c, nChar, { (short)x,(short)y}, &written);
-	FillConsoleOutputAttribute(*m_hBackgroundScreenBuffer, (int)color, nChar, { (short)x,(short)y }, &written);
-}
-
-void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) {
+void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) const {
+	// Draw a border to buffer
 	int x1 = topLeft.getX();
 	int y1 = topLeft.getY();
 
 	int x2 = bottomRight.getX();
 	int y2 = bottomRight.getY();
 
-	int width = x2 - x1;
+	int width = x2 - x1 + 1;
 
-	// Draw 2 top corner
-	Draw(x1, y1, TOP_LEFT_CORNER, color);
-	Draw(x2, y1, TOP_RIGHT_CORNER, color);
+	//// Draw 2 top corner
+	//Draw(x1, y1, TOP_LEFT_CORNER, color);
+	//Draw(x2, y1, TOP_RIGHT_CORNER, color);
+
+	//// Draw 2 horizontal line
+	//Draw(x1 + 1, y1, HORIZONTAL_OUTLINE, color,width - 1);
+	//Draw(x1 + 1, y2, HORIZONTAL_OUTLINE, color,width - 1);
+
+	//// Draw 2 vertical line
+	//for(int index = y1 + 1; index < y2; index++){
+	//	Draw(x1, index, VERTICAL_OUTLINE, color);
+	//	Draw(x2, index, VERTICAL_OUTLINE, color);
+	//}
+
+	//// Draw 2 bottom corner
+	//Draw(x1, y2, BOTTOM_LEFT_CORNER, color);
+	//Draw(x2, y2, BOTTOM_RIGHT_CORNER, color);
+
+	//// Draw 2 top corner
+	//DrawPixel(x1, y1,' ' , color);
+	//DrawPixel(x2, y1, ' ', color);
 
 	// Draw 2 horizontal line
-	Draw(x1 + 1, y1, HORIZONTAL_OUTLINE, color,width - 1);
-	Draw(x1 + 1, y2, HORIZONTAL_OUTLINE, color,width - 1);
+	DrawPixels(x1, y1, ' ', color, width);
+	DrawPixels(x1, y2, ' ', color, width);
 
 	// Draw 2 vertical line
-	for(int index = y1 + 1; index < y2; index++){
-		Draw(x1, index, VERTICAL_OUTLINE, color);
-		Draw(x2, index, VERTICAL_OUTLINE, color);
+	for (int index = y1 + 1; index < y2; index++) {
+		DrawPixels(x1, index, ' ', color);
+		DrawPixels(x2, index, ' ', color);
 	}
-
-	// Draw 2 bottom corner
-	Draw(x1, y2, BOTTOM_LEFT_CORNER, color);
-	Draw(x2, y2, BOTTOM_RIGHT_CORNER, color);
 }
 
-void Console::DrawObject(int x, int y,const Texture& form, COLOUR color) const {
+void Console::DrawObject(int x, int y, const Texture& form, COLOUR color) const {
+	// Draw a object to buffer
 	vector<string> body = form.GetTexture();
 	int currX = x;
 	int currY = y;
 
 	for (const auto& line : body) {
 		for (const auto& c : line) {
-			Draw(currX, currY, c,color);
+			DrawPixels(currX, currY, c, color);
 			currX++;
 		}
 		currX = x;
@@ -165,14 +181,15 @@ void Console::ClearScreen() const {
 }
 
 void Console::Render() {
-	CONSOLE_SCREEN_BUFFER_INFO windowInfo;
-	GetConsoleScreenBufferInfo(&m_hActiveScreenBuffer, &windowInfo);
-	SetConsoleScreenBufferSize(&m_hBackgroundScreenBuffer, windowInfo.dwSize);
-
 	// Switch between 2 buffer
-	m_bSwitcher = !m_bSwitcher;
-	m_hActiveScreenBuffer = (m_bSwitcher == false) ? &m_hScreenBufferOne : &m_hScreenBufferTwo;
-	m_hBackgroundScreenBuffer = (m_bSwitcher == false) ? &m_hScreenBufferTwo : &m_hScreenBufferOne;
+	if (m_hActiveScreenBuffer == &m_hScreenBufferOne) {
+		m_hActiveScreenBuffer = &m_hScreenBufferTwo;
+		m_hBackgroundScreenBuffer = &m_hScreenBufferOne;
+	}
+	else {
+		m_hActiveScreenBuffer = &m_hScreenBufferOne;
+		m_hBackgroundScreenBuffer = &m_hScreenBufferTwo;
+	}
 
 	SetConsoleActiveScreenBuffer(*m_hActiveScreenBuffer);
 }

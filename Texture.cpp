@@ -1,15 +1,35 @@
 #include "Texture.h"
 
-Texture::Texture(const string& body) {
-	stringstream sstream(body);
-	string temp;
+unsigned int findWidth(const std::vector<std::string>& form) {
+	int max = 0;
+	for (const auto& line : form) {
+		int length = line.size();
+		if (length > max)
+			max = length;
+	}
+
+	return max;
+}
+
+unsigned int findHeight(const std::vector<std::string>& form) {
+	return form.size();
+}
+
+Texture::Texture(const std::string& body) {
+	if (body.size() == 0) {
+		return;
+	}
+
+	std::stringstream sstream(body);
+	std::string temp;
+
 	while (getline(sstream,temp,'\n'))
 	{
 		m_vecBody.push_back(temp);
 	}
 
-	mHeight = m_vecBody.size();
-	mWidth = m_vecBody[0].size();
+	mHeight = findHeight(m_vecBody);
+	mWidth = findWidth(m_vecBody);
 }
 
 Texture::Texture(const Texture& other) {
@@ -19,35 +39,27 @@ Texture::Texture(const Texture& other) {
 	mWidth = other.mWidth;
 }
 
-Texture& Texture::operator= (const Texture& other) {
-	if (this == &other) {
-		m_vecBody = other.m_vecBody;
-
-		mHeight = other.mHeight;
-		mWidth = other.mWidth;
-	}
-	return *this;
-}
-
 Texture& Texture::operator= (const char* body) {
-	stringstream sstream(body);
-	string temp;
+	std::stringstream sstream(body);
+	std::string temp;
 	while (getline(sstream, temp, '\n'))
 	{
-		temp;
 		m_vecBody.push_back(temp);
 	}
 
-	mHeight = m_vecBody.size();
-	mWidth = m_vecBody[0].size();
+	mHeight = findHeight(m_vecBody);
+	mWidth = findWidth(m_vecBody);
+
 	return *this;
 }
 
-void Texture::AddString(const string& part) {
+void Texture::AddLine(const std::string& part) {
 	if (mWidth != part.size())
 		return;
 	m_vecBody.push_back(part);
-	mHeight += 1;
+
+	mHeight = findHeight(m_vecBody);
+	mWidth = findWidth(m_vecBody);
 }
 
 int Texture::Height() const{
@@ -58,6 +70,6 @@ int Texture::Width() const{
 	return mWidth;
 }
 
-vector<string> Texture::GetTexture() const{
+std::vector<std::string> Texture::GetTexture() const{
 	return m_vecBody;
 }
