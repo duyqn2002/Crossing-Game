@@ -15,13 +15,6 @@ protected:
 	int mHeight = 0;
 	int mWidth = 0;
 
-	// Limit left and right X
-	int mLeft = 0;
-	int mRight = 0;
-
-	// Speed of vehicle
-	double mSpeed;
-
 	// Vehicle form
 	Texture mVehicleLeftForm;
 	Texture mVehicleRightForm;
@@ -34,17 +27,15 @@ public:
 	CVEHICLE() = default;
 	virtual ~CVEHICLE() = default;
 
-	static CVEHICLE* createObject(const string&);
+	static CVEHICLE* createObject(const ENEMY&);
 
-	virtual string className() = 0;
+	virtual ENEMY className() = 0;
 	virtual CVEHICLE* Clone() = 0;
 
 	// Setter
 	void setX(int);
 	void setY(int);
 	void setXY(int, int);
-	void setLimit(int, int);
-	void setSpeed(double);
 	void setColour(COLOUR);
 
 	// Getter
@@ -52,21 +43,13 @@ public:
 	int getY() const;
 	int Width() const;
 	int Height() const;
-	int getLeft() const;
-	int getRight() const;
-	int getSpeed() const;
-
-	// Check impact with another vehicle
-	bool isImpact(const CVEHICLE&) const;
 
 	// Update method
-	void toggleForm();
+	void toggleForm(int);
 	void Move(int, int);
-	void resetPos();
-	void updatePos();
 
 	// Render method
-	void drawVehicle(const Console&) const;
+	virtual void drawToConsole(int,int,Console&);
 
 protected:
 	static CVEHICLE* addSample(CVEHICLE*);

@@ -62,6 +62,12 @@ Console::Console(unsigned int width, unsigned int height, unsigned int fontw, un
 		return;
 }
 
+Console* Console::getConsole(unsigned int width, unsigned int height, unsigned int fontw, unsigned int fonth)
+{
+	static Console mInstance(width, height, fontw, fonth);
+	return &mInstance;
+}
+
 Console::Console(const Console& other) {
 	mHeight = other.mHeight;
 	mWidth = other.mWidth;
@@ -79,10 +85,7 @@ Console::Console(const Console& other) {
 	}
 }
 
-Console::~Console() {
-	m_hActiveScreenBuffer = nullptr;
-	m_hBackgroundScreenBuffer = nullptr;
-}
+Console::~Console() {}
 
 unsigned int Console::Height() const {
 	return mHeight;
@@ -92,14 +95,14 @@ unsigned int Console::Width() const {
 	return mWidth;
 }
 
-void Console::FixedConsoleWindow() const {
+void Console::FixedConsoleWindow() {
 	HWND consoleWindow = GetConsoleWindow();
 	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
 	style = style & ~(WS_MAXIMIZEBOX) & ~(WS_THICKFRAME);
 	SetWindowLong(consoleWindow, GWL_STYLE, style);
 }
 
-void Console::DrawPixels(int x, int y, char c, COLOUR color, int nChar) const {
+void Console::DrawPixels(int x, int y, char c, COLOUR color, int nChar) {
 	// Draw one or nChar pixel
 	DWORD written;
 	COORD coord;
@@ -111,7 +114,7 @@ void Console::DrawPixels(int x, int y, char c, COLOUR color, int nChar) const {
 	FillConsoleOutputAttribute(*m_hBackgroundScreenBuffer, (int)color, nChar, coord, &written);
 }
 
-void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) const {
+void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) {
 	// Draw a border to buffer
 	int x1 = topLeft.getX();
 	int y1 = topLeft.getY();
@@ -120,28 +123,6 @@ void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) c
 	int y2 = bottomRight.getY();
 
 	int width = x2 - x1 + 1;
-
-	//// Draw 2 top corner
-	//Draw(x1, y1, TOP_LEFT_CORNER, color);
-	//Draw(x2, y1, TOP_RIGHT_CORNER, color);
-
-	//// Draw 2 horizontal line
-	//Draw(x1 + 1, y1, HORIZONTAL_OUTLINE, color,width - 1);
-	//Draw(x1 + 1, y2, HORIZONTAL_OUTLINE, color,width - 1);
-
-	//// Draw 2 vertical line
-	//for(int index = y1 + 1; index < y2; index++){
-	//	Draw(x1, index, VERTICAL_OUTLINE, color);
-	//	Draw(x2, index, VERTICAL_OUTLINE, color);
-	//}
-
-	//// Draw 2 bottom corner
-	//Draw(x1, y2, BOTTOM_LEFT_CORNER, color);
-	//Draw(x2, y2, BOTTOM_RIGHT_CORNER, color);
-
-	//// Draw 2 top corner
-	//DrawPixel(x1, y1,' ' , color);
-	//DrawPixel(x2, y1, ' ', color);
 
 	// Draw 2 horizontal line
 	DrawPixels(x1, y1, ' ', color, width);
@@ -154,9 +135,9 @@ void Console::DrawBorder(CPOINT2D topLeft, CPOINT2D bottomRight, COLOUR color) c
 	}
 }
 
-void Console::DrawObject(int x, int y, const Texture& form, COLOUR color) const {
+void Console::DrawObject(int x, int y, const Texture& form, COLOUR color) {
 	// Draw a object to buffer
-	vector<string> body = form.GetTexture();
+	vector<string> body = form.getTexture();
 	int currX = x;
 	int currY = y;
 
@@ -170,7 +151,7 @@ void Console::DrawObject(int x, int y, const Texture& form, COLOUR color) const 
 	}
 }
 
-void Console::ClearScreen() const {
+void Console::ClearScreen() {
 	COORD topLeft = { 0 , 0 };
 	CONSOLE_SCREEN_BUFFER_INFO bufferWindowInfo;
 	DWORD written;

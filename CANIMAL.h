@@ -1,7 +1,6 @@
 #ifndef CANIMAL_H
 #define CANIMAL_H
 
-#include "CPOINT2D.h"
 #include "Console.h"
 
 class CANIMAL {
@@ -16,12 +15,6 @@ protected:
 	int mHeight;
 	int mWidth;
 
-	// Limit left and right X
-	int mLeft;
-	int mRight;
-
-	double mSpeed;
-
 	// Animal form
 	Texture mAnimalLeftForm;
 	Texture mAnimalRightForm;
@@ -33,17 +26,15 @@ public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
 
-	static CANIMAL* createObject(const string&);
+	static CANIMAL* createObject(const ENEMY&);
 
-	virtual string className() = 0;
+	virtual ENEMY className() = 0;
 	virtual CANIMAL* Clone() = 0;
 
 	// Setter
 	void setX(int);
 	void setY(int);
 	void setXY(int, int);
-	void setLimit(int, int);
-	void setSpeed(double);
 	void setColour(COLOUR);
 
 	// Getter
@@ -51,24 +42,16 @@ public:
 	int getY() const;
 	int Width() const;
 	int Height() const;
-	int getLeft() const;
-	int getRight() const;
-	int getSpeed() const;
-
-	// Check impact with another animal
-	bool isImpact(const CANIMAL&) const;
 
 	// Update method
-	virtual void toggleForm();
-	virtual void Move(int, int);
-	virtual void resetPos();
-	virtual void updatePos();
+	void toggleForm(int);
+	void Move(int, int);
 
 	// Sound
 	virtual void Tell() {};
 
 	// Render method
-	virtual void drawAnimal(const Console&) const;
+	virtual void drawToConsole(int,int,Console&);
 
 protected:
 	static CANIMAL* addSample(CANIMAL*);

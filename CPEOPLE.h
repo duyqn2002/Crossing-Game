@@ -1,11 +1,9 @@
 ﻿#ifndef CPEOPLE_H
 #define CPEOPLE_H
 
-#include "Console.h"
-#include "CVEHICLE.h"
-#include "CANIMAL.h"
+#include "CLANE.h"
 
-class CPEOPLE{
+class CPEOPLE {
 private:
 	// Current position 2D
 	CPOINT2D mCurrPos;
@@ -39,21 +37,21 @@ public:
 	void setLimitZone(CPOINT2D, CPOINT2D);
 
 	// Getter
+	int getX() const;
+	int getY() const;
 	int Height() const;
 	int Width() const;
-	CPOINT2D getPosition() const;
 
 	// Moving function
-	void toggleForm();
 	void Up(int);
 	void Left(int);
 	void Right(int);
 	void Down(int);
-	void Move(DIRECTION, int);
+	void Move(KEY, int);
 
 	// Check impact
-	bool isImpact(const vector<CVEHICLE*>&) const;
-	bool isImpact(const vector<CANIMAL*>&) const;
+	template <class T>
+	bool isImpact(const CLANE<T>&);
 
 	// Don't let the people go outside the playing area
 	void Clip();
@@ -63,7 +61,24 @@ public:
 	bool isDead() const;
 
 	// Render people function
-	void drawPeople(const Console&) const;
+	void drawPeople(Console&);
 };
+
+template <class T>
+bool CPEOPLE::isImpact(const CLANE<T>& Lane) {
+	bool isImpact = false;
+
+	for (int i = 0; i < Lane.size(); i++) {
+		if (getX() + Width() >= Lane[i].getX() && getX() <= Lane[i].getX() + Lane[i].Width()) {
+			isImpact = true;
+			break;
+		}
+	}
+
+	// If impact with object, people will die
+	if (isImpact)
+		mState = false;
+	return isImpact;
+}
 
 #endif // CPEOPLE_H

@@ -16,8 +16,6 @@ CDOG::CDOG() {
 	mHeight = mAnimalLeftForm.Height();
 	mWidth = mAnimalLeftForm.Width();
 
-	mSpeed = 0;
-
 	mCurrAnimalForm = &mAnimalLeftForm;
 	mAnimalColour = DOG_COLOUR;
 }
@@ -29,13 +27,6 @@ CDOG::CDOG(const CDOG& other) {
 	// Width and height of animal
 	mHeight = other.mHeight;
 	mWidth = other.mWidth;
-
-	// Limit left and right X
-	mLeft = other.mLeft;
-	mRight = other.mRight;
-
-	// Speed of animal
-	mSpeed = other.mSpeed;
 
 	// Animal form
 	mAnimalLeftForm = other.mAnimalLeftForm;

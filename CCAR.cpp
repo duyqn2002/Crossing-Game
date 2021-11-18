@@ -17,8 +17,6 @@ CCAR::CCAR()
 	mHeight = mVehicleLeftForm.Height();
 	mWidth = mVehicleLeftForm.Width();
 
-	mSpeed = 0;
-
 	mCurrVehicleForm = &mVehicleLeftForm;
 	mVehicleColour = CAR_COLOUR;
 }
@@ -30,13 +28,6 @@ CCAR::CCAR(const CCAR& other) {
 	// Width and height of vehicle
 	mHeight = other.mHeight;
 	mWidth = other.mWidth;
-
-	// Limit left and right X
-	mLeft = other.mLeft;
-	mRight = other.mRight;
-
-	// Speed of vehicle
-	mSpeed = other.mSpeed;
 
 	// Vehicle form
 	mVehicleLeftForm = other.mVehicleLeftForm;

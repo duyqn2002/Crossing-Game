@@ -1,74 +1,78 @@
 ﻿#ifndef CGAME_H
 #define CGAME_H
 
-#include "HelpFunctions.h"
-#include "Console.h"
 #include "CPEOPLE.h"
-#include "CTRUCK.h"
-#include "CCAR.h"
+#include "CLANE.h"
 
 class CGAME {
 private:
-	static CGAME* m_pGame;
+	bool isPlaying;
+	bool isPause;
+	thread mRenderGame;
 
-	Console mConsole;
+	Console* m_pConsole;
 
-	vector<pair<float, string>> m_vecLanes = {
-		{0.0f,"SAFE"},
-		{-1.0f,"CDOG"},
-		{1.0f,"CBIRD"},
-		{-1.0f,"CDOG"},
-		{1.0f,"CBIRD"},
-		{1.0f,"SAFE"},
-		{-1.0f,"CCAR"},
-		{1.0f,"CTRUCK"},
-		{-1.0f,"CCAR"},
-		{1.0f,"CTRUCK"},
-		{-1.0f,"CCAR"},
-		{0.0f,"SAFE"},
+	vector<pair<float, ENEMY>> mLanes = {
+		{0.0f,ENEMY::NO_ENEMY},
+		{-1.0f,ENEMY::CDOG},
+		{1.0f,ENEMY::CBIRD},
+		{-1.0f,ENEMY::CDOG},
+		{1.0f,ENEMY::CBIRD},
+		{1.0f,ENEMY::NO_ENEMY},
+		{-1.0f,ENEMY::CCAR},
+		{1.0f,ENEMY::CTRUCK},
+		{-1.0f,ENEMY::CCAR},
+		{1.0f,ENEMY::CTRUCK},
+		{-1.0f,ENEMY::CCAR},
 	};
 
-	vector<pair<int,vector<CVEHICLE*>>>m_vecVehicles;
-	vector<pair<int, vector<CANIMAL*>>>m_vecAnimals;
+	vector<CLANE<CVEHICLE>> mVehiclesLane;
+	vector<CLANE<CANIMAL>> mAnimalsLane;
 
 	// Player
 	CPEOPLE mPeople;
+	int peopleScore;
 
 	// Playing area setting
 	CPOINT2D mTopLeft;
 	CPOINT2D mBottomRight;
 
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
+	CGAME(const CGAME&);
+	CGAME& operator=(const CGAME&);
 public:
 	static CGAME* getGame();
 	~CGAME(); // Hủy tài nguyên đã cấp phát
 
 	// Post process
-	void setObject();
+	void setObjects();
 	void setPeople();
 	void setPlayingArea(float = 1.0f, float = 1.0f);
 
 	CPEOPLE getPeople() const; // Lấy thông tin người
-	vector<CVEHICLE*> getVehicles() const; // Lấy danh sách các xe
-	vector<CANIMAL*> getAnimals() const; // Lấy danh sách các thú
+	CLANE<CVEHICLE> getVehicles() const; // Lấy danh sách các xe
+	CLANE<CANIMAL> getAnimals() const; // Lấy danh sách các thú
 
-	void drawPlayingArea() const; // Vẽ khu vực chơi
-	void drawVehicles() const; // Vẽ xe
-	void drawAnimals() const; // Vẽ thú
+	void drawPlayingArea(); // Vẽ khu vực chơi
+	void drawVehicles(); // Vẽ xe
+	void drawAnimals(); // Vẽ thú
 	void drawGame(); // Thực hiện vẽ trò chơi ra màn hình sau khi có dữ liệu
 
-	void nextLevel();
+	void renderGameThread(KEY*);
 	void resetGame(); // Thực hiện thiết lập lại toàn bộ dữ liệu như lúc đầu
+	void gameMainMenu();
+
+	void nextLevel() {};
 	void startGame(); // Thực hiện bắt đầu vào trò chơi
 
 	void loadGame(istream); // Thực hiện tải lại trò chơi đã lưu
 	void saveGame(istream); // Thực hiện lưu lại dữ liệu trò chơi
 
-	void pauseGame(HANDLE) const; // Tạm dừng Thread
-	void resumeGame(HANDLE) const; // Quay lai Thread
-	void exitGame(HANDLE); // Thực hiện thoát Thread
+	void pauseGame(); // Tạm dừng Thread
+	void resumeGame(); // Quay lai Thread
+	void exitGame(); // Thực hiện thoát Thread
 
-	void updatePosPeople(DIRECTION); // Thực hiện điều khiển di chuyển của CPEOPLE
+	void updatePosPeople(KEY); // Thực hiện điều khiển di chuyển của CPEOPLE
 	void updatePosVehicle(); // Thực hiện cho CTRUCK & CCAR di chuyển
 	void updatePosAnimal(); // Thực hiện cho CDINAUSOR & CBIRD di chuyển
 };

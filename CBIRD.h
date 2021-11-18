@@ -9,7 +9,6 @@ private:
 public:
 	CBIRD();
 	CBIRD(const CBIRD&);
-
 	INIT_METHOD(CANIMAL, CBIRD);
 };
 

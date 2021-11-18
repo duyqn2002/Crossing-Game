@@ -1,117 +1,55 @@
 ﻿#include "CGAME.h"
 
 CGAME::CGAME()  {
-	mConsole = Console(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+	isPlaying = false;
+	m_pConsole = Console::getConsole(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
 	// Set obj
 	setPlayingArea(SCALE_X, SCALE_Y);
-	setObject();
+	setObjects();
 	setPeople();
 }
 
-CGAME* CGAME::m_pGame = nullptr;
-
 CGAME* CGAME::getGame() {
-	if (m_pGame == nullptr)
-		m_pGame = new CGAME();
-	return m_pGame;
+	static CGAME mInstance;
+	return &mInstance;
 }
 
-CGAME::~CGAME() {
-	for (auto& lane : m_vecVehicles) {
-		for (auto& vehicle : lane.second) {
-			delete vehicle;
-			vehicle = nullptr;
-		}
-	}
+CGAME::~CGAME() {}
 
-	for (auto& lane : m_vecAnimals) {
-		for (auto& animal : lane.second) {
-			delete animal;
-			animal = nullptr;
-		}
-	}
-}
-
-template <class T>
-bool isSamePos(vector<T*> vecObjects, T* inObject) {
-	for (auto& Object : vecObjects) {
-		if (Object == inObject)
-			continue;
-		if (Object->isImpact(*inObject) == true)
-			return true;
-	}
-
-	return false;
-}
-
-template <class T>
-vector<T*> createObjects(T* Object,int numberOfVehicles) {
-	vector<T*> vecObjects;
-	int left = Object->getLeft();
-	int right = Object->getRight();
-
-
-	int width = Object->Width();
-	int randomGap = 0;
-
-
-	// If the template Object == nullptr return empty vector
-	if (Object != nullptr) {
-		// Push back to the vector
-		vecObjects.push_back(Object);
-
-		for (int index = 1; index < numberOfVehicles; index++) {
-			// Cloning Technique
-			T* tempObj = Object->Clone();
-			int prevObjPosX = vecObjects[index - 1]->getX();
-
-			randomGap = RandomInt(50, width);
-
-			tempObj->setX(prevObjPosX + randomGap);
-
-			vecObjects.push_back(tempObj);
-		}
-	}
-
-	return vecObjects;
-}
-
-
-void CGAME::setObject() {
+void CGAME::setObjects() {
 	int left = mTopLeft.getX();
 	int right = mBottomRight.getX();
 
-	int x;
 	int y = mTopLeft.getY() + 1;
 
-	CVEHICLE* vehicle;
-	CANIMAL* animal;
-
-	for (const auto& lane : m_vecLanes) {
+	for (const auto& lane : mLanes) {
 		int randomQty = RandomInt(3, 2);
+		CLANE<CANIMAL> tempAnimals(left, right);
+		CLANE<CVEHICLE> tempVehicles(left, right);
 
-		vehicle = CVEHICLE::createObject(lane.second);
-		animal = CANIMAL::createObject(lane.second);
+		switch (lane.second)
+		{
+		
+		case ENEMY::CTRUCK:
+		case ENEMY::CCAR:
+			tempVehicles.setY(y);
+			tempVehicles.setSpeed(lane.first);
+			tempVehicles.generateObjectsOnLane(lane.second, randomQty);
+			tempVehicles.enableTrafficLight();
+			mVehiclesLane.push_back(tempVehicles);
+			break;
 
-		do {
-			x = RandomInt(right + 50, left); - 50;
-		} while (x > left && x < right);
+		case ENEMY::CDOG:
+		case ENEMY::CBIRD:
+			tempAnimals.setY(y);
+			tempAnimals.setSpeed(lane.first);
+			tempAnimals.generateObjectsOnLane(lane.second, randomQty);
+			mAnimalsLane.push_back(tempAnimals);
+			break;
 
-		if (vehicle != nullptr) {
-			vehicle->setXY(x, y);
-			vehicle->setSpeed(lane.first);
-			vehicle->setLimit(left, right);
-			m_vecVehicles.push_back({ y, createObjects(vehicle, randomQty) });
-
+		default:
+			break;
 		}
-
-		if (animal != nullptr) {
-			animal->setXY(x, y);
-			animal->setSpeed(lane.first);
-			animal->setLimit(left, right);
-			m_vecAnimals.push_back({ y, createObjects(animal,randomQty)});
-		}
-
 		y += LANE_SIZE;
 	}
 }
@@ -130,8 +68,8 @@ void CGAME::setPeople() {
 
 void CGAME::setPlayingArea(float scaleX,float scaleY) {
 	// Set the size of the playing area
-	int mPlayingAreaHeight = mConsole.Height() * scaleY - 1;
-	int mPlayingAreaWdth = mConsole.Width() * scaleX - 1;
+	int mPlayingAreaHeight = m_pConsole->Height() * scaleY - 1;
+	int mPlayingAreaWdth = m_pConsole->Width() * scaleX - 1;
 
 	// Set the top left point of the playing area
 	mTopLeft = CPOINT2D(TOP_LEFT_X, TOP_LEFT_Y);
@@ -142,97 +80,256 @@ CPEOPLE CGAME::getPeople() const {
 	return mPeople;
 }
 
-vector<CVEHICLE*> CGAME::getVehicles() const{
+CLANE<CVEHICLE> CGAME::getVehicles() const{
+	for (const auto& Lane : mVehiclesLane) {
+		if (mPeople.getY() == Lane.getY())
+			return Lane;
+	}
 
-	return vector<CVEHICLE*>();
+	return CLANE<CVEHICLE>();
 }
 
-vector<CANIMAL*> CGAME::getAnimals() const{
-	return vector<CANIMAL*>();
+CLANE<CANIMAL> CGAME::getAnimals() const{
+	for (const auto& Lane : mAnimalsLane) {
+		if (mPeople.getY() == Lane.getY())
+			return Lane;
+	}
+
+	return CLANE<CANIMAL>();
 }
 
-void CGAME::drawPlayingArea()  const {
+void CGAME::drawPlayingArea() {
 	// Draw the border line
-	mConsole.DrawBorder(mTopLeft, mBottomRight, PLAYING_AREA_COLOUR);
+	m_pConsole->DrawBorder(mTopLeft, mBottomRight, PLAYING_AREA_COLOUR);
 }
 
-void  CGAME::drawVehicles() const {
-	for (const auto& vehicleLane : m_vecVehicles) {
-		for (const auto& vehicle : vehicleLane.second) {
-			vehicle->drawVehicle(mConsole);
-		}
+void  CGAME::drawVehicles() {
+	for (auto& Lane : mVehiclesLane) {
+		Lane.drawObjectsOnLane(*m_pConsole);
 	}
 }
 
-void  CGAME::drawAnimals() const {
-	for (const auto& animalLane : m_vecAnimals) {
-		for (const auto& animal : animalLane.second) {
-			animal->drawAnimal(mConsole);
-		}
+void  CGAME::drawAnimals() {
+	for (auto& Lane : mAnimalsLane) {
+		Lane.drawObjectsOnLane(*m_pConsole);
 	}
 }
 
 void CGAME::drawGame() {
 	// Clear the old screen
-	mConsole.ClearScreen();
+	m_pConsole->ClearScreen();
 
 	// Draw border
 	drawPlayingArea();
 
 	// Draw people
-	mPeople.drawPeople(mConsole);
+	mPeople.drawPeople(*m_pConsole);
 
 	//// Draw object
 	drawVehicles();
 	drawAnimals();
 
 	// Render out console
-	mConsole.Render();
+	m_pConsole->Render();
 }
 
 void CGAME::resetGame() {
-	if (m_pGame != nullptr) {
-		delete m_pGame;
-		m_pGame = new CGAME();
+	mVehiclesLane.clear();
+	mAnimalsLane.clear();
+
+	setObjects();
+	setPeople();
+}
+
+int inputKey()
+{
+	if (_kbhit())
+	{
+		int key = _getch();
+
+		if (key == 224)	// special key
+		{
+			key = _getch();
+			return key + 1000;
+		}
+
+		return key;
+	}
+	else
+	{
+		return -1;
+	}
+
+	return -1;
+}
+
+void menu() {
+	const string choice[4] = { "New Game","Load Game","Settings","Quit" };
+	int pos = 0;
+	int x = 35, y = 15;
+	//if (!SetOption::mute)PlaySound(TEXT("PUBG.wav"), NULL, SND_ASYNC);
+	bool changeInput = true;
+	while (true) {
+		changeInput = true;
+
+		//if (!SetOption::mute)PlaySound(TEXT("PUBG.wav"), NULL, SND_ASYNC);
+		while (true) {
+			if (changeInput) {
+				system("cls");
+				//map.printBorder();
+				for (int i = 0; i < 4; i++) {
+					//GotoXY(x, y + i);
+					if (i == pos)
+					{
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+					}
+					else
+					{
+						SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+					}
+					cout << choice[i] << endl;
+				}
+
+				//TextColor(7);
+
+				string street = "                                                     \n"
+					"     | |               | |                        | |\n"
+					"  __| | _ _ __  __| |    _ _ __   __ _  __| |\n"
+					" / __| __| '__/ _ \\/ _ \\ __|  | '__/ _ \\ / _ |/ _ |\n"
+					" \\__ \\ |_| | |  _/  __/ |   | | | (_) | (_| | (_| |\n"
+					" |___/\\__|_|  \\___|\\___|\\__|  |_|  \\___/ \\__,_|\\__,_|\n";
+				//GotoXY(17, 5);
+				cout << street;
+			}
+			//cout << street;
+			changeInput = false;
+			switch (inputKey()) {
+				changeInput = true;
+				//PlaySound(TEXT("RING.wav"), NULL, SND_ASYNC);
+			case 'w':
+				changeInput = true;
+				pos--;
+				pos = (pos + 4) % 4;
+				break;
+			case 's':
+				changeInput = true;
+				pos++;
+				pos %= 4;
+				break;
+			case 13:
+				switch (pos) {
+				case 0:
+				{
+
+					cout << "them vao dayu";
+					break;
+
+				}
+				case 1: {
+					cout << "hello";
+					break;
+
+				}
+				case 2:
+				{
+					cout << "setting";
+					break;
+				}
+				case 3:
+				{
+					system("cls");
+					cout << "quit";
+				}
+				}
+
+
+			}
+		}
+	}
+}
+
+void CGAME::renderGameThread(KEY* MOVING) {
+	while (isPlaying) {
+		if (isPause == true)
+			continue;
+
+		if (!getPeople().isDead()) {
+			updatePosPeople(*MOVING);
+		}
+		*MOVING = KEY::STAND_STILL;
+
+		updatePosVehicle();
+		updatePosAnimal();
+
+		drawGame();
+
+		if (getPeople().isImpact(getVehicles()) || getPeople().isImpact(getAnimals())) {
+			break;
+		}
+
+		if (getPeople().isFinish()) {
+			nextLevel();
+		}
+
+		Sleep(30);
 	}
 }
 
 void CGAME::startGame() {
-	resetGame();
+	KEY MOVING = KEY::STAND_STILL;
+	KEY temp;
+
+	isPlaying = true;
+	mRenderGame = thread(&CGAME::renderGameThread, this, &MOVING);
+
+	while (true) {
+		temp = (KEY)toupper(_getch());
+		if (!getPeople().isDead()) {
+			if (temp == KEY::ESC) {
+				exitGame();
+				return;
+			}
+			else if (temp == KEY::PAUSE) {
+				pauseGame();
+			}
+			else {
+				resumeGame();
+				MOVING = (KEY)temp;
+			}
+		}
+		
+	}
 }
 
 void CGAME::loadGame(istream) {}
 
 void CGAME::saveGame(istream) {}
 
-void CGAME::pauseGame(HANDLE handleThread) const {
-	SuspendThread(handleThread);
+void CGAME::pauseGame() {
+	isPause = true;
 }
 
-void CGAME::resumeGame(HANDLE handleThread) const {
-	ResumeThread(handleThread);
+void CGAME::resumeGame() {
+	isPause = false;
 }
 
-void CGAME::exitGame(HANDLE handleThread) {
-
+void CGAME::exitGame() {
+	isPlaying = false;
+	mRenderGame.join();
 }
 
-void CGAME::updatePosPeople(DIRECTION direction) {
+void CGAME::updatePosPeople(KEY direction) {
 	mPeople.Move(direction,LANE_SIZE);
 }
 
 void CGAME::updatePosVehicle() {
-	for (auto& vehicleLane : m_vecVehicles) {
-		for (auto& vehicle : vehicleLane.second) {
-			vehicle->updatePos();
-		}
+	for (auto& Lane : mVehiclesLane) {
+		Lane.updateObjectsOnLane();
 	}
 }
 
 void CGAME::updatePosAnimal() {
-	for (auto& animalLane : m_vecAnimals) {
-		for (auto& animal : animalLane.second) {
-			animal->updatePos();
-		}
+	for (auto& Lane : mAnimalsLane) {
+		Lane.updateObjectsOnLane();
 	}
 }

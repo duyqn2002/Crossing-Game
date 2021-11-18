@@ -7,13 +7,13 @@
 
 class Texture {
 private:
-	std::vector<std::string> m_vecBody;
+	std::vector<std::string> mBody;
 	int mWidth;
 	int mHeight;
 
 public:
 	Texture() = default;
-	Texture(const std::string&);
+	Texture(const char* body);
 	Texture(const Texture&);
 
 	~Texture() = default;
@@ -27,7 +27,7 @@ public:
 	// Getter
 	int Height() const;
 	int Width() const;
-	std::vector<std::string> GetTexture() const;
+	std::vector<std::string> getTexture() const;
 };
 
 #endif // TEXTURE_H

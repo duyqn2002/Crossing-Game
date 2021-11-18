@@ -16,8 +16,6 @@ CBIRD::CBIRD() {
 	mHeight = mAnimalLeftForm.Height();
 	mWidth = mAnimalLeftForm.Width();
 
-	mSpeed = 0;
-
 	mCurrAnimalForm = &mAnimalLeftForm;
 
 	mAnimalColour = BIRD_COLOUR;
@@ -30,13 +28,6 @@ CBIRD::CBIRD(const CBIRD& other) {
 	// Width and height of animal
 	mHeight = other.mHeight;
 	mWidth = other.mWidth;
-
-	// Limit left and right X
-	mLeft = other.mLeft;
-	mRight = other.mRight;
-
-	// Speed of animal
-	mSpeed = other.mSpeed;
 
 	// Animal form
 	mAnimalLeftForm = other.mAnimalLeftForm;

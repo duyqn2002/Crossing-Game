@@ -83,6 +83,14 @@ void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
 	mBottomRight = bottomRight;
 }
 
+int CPEOPLE::getX() const {
+	return mCurrPos.getX();
+}
+
+int CPEOPLE::getY() const {
+	return mCurrPos.getY();
+}
+
 int CPEOPLE::Height() const {
 	return mHeight;
 }
@@ -90,11 +98,6 @@ int CPEOPLE::Height() const {
 int CPEOPLE::Width() const {
 	return mWidth;
 }
-
-CPOINT2D CPEOPLE::getPosition() const {
-	return mCurrPos;
-}
-
 
 void CPEOPLE::Clip() {
 	int currX = mCurrPos.getX();
@@ -136,44 +139,33 @@ void CPEOPLE::Down(int delta) {
 	mCurrPos.moveY(delta);
 }
 
-void CPEOPLE::Move(DIRECTION direction, int delta) {
-	if (direction == DIRECTION::STAND_STILL) {
-		return;
-	}
-
+void CPEOPLE::Move(KEY direction, int delta) {
 	switch (direction) {
-	case DIRECTION::UP:
+	case KEY::UP:
 		Up(delta);
 		break;
 
-	case DIRECTION::DOWN:
+	case KEY::DOWN:
 		Down(delta);
 		break;
 
-	case DIRECTION::LEFT:
+	case KEY::LEFT:
 		Left(mWidth);
 		mCurrForm = &mPeopleLeftForm;
 		break;
 
-	case DIRECTION::RIGHT:
+	case KEY::RIGHT:
 		Right(mWidth);
 		mCurrForm = &mPeopleRightForm;
 		break;
 	default:
 		return;
 	}
+
 	mHeight = mCurrForm->Height();
 	mWidth = mCurrForm->Width();
 
 	Clip();
-}
-
-bool CPEOPLE::isImpact(const vector<CVEHICLE*>& vehiclesOnLane) const{
-	return false;
-}
-
-bool CPEOPLE::isImpact(const vector<CANIMAL*>& animalsOnLane) const{
-	return false;
 }
 
 bool  CPEOPLE::isFinish() const {
@@ -187,7 +179,7 @@ bool  CPEOPLE::isDead() const {
 	return !mState;
 }
 
-void CPEOPLE::drawPeople(const Console& console) const {
+void CPEOPLE::drawPeople(Console& console){
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 

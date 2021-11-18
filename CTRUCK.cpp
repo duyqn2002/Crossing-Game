@@ -16,8 +16,6 @@ CTRUCK::CTRUCK() {
 	mHeight = mVehicleRightForm.Height();
 	mWidth = mVehicleRightForm.Width();
 
-	mSpeed = 0;
-
 	mCurrVehicleForm = &mVehicleLeftForm;
 	mVehicleColour = TRUCK_COLOUR;
 }
@@ -29,13 +27,6 @@ CTRUCK::CTRUCK(const CTRUCK& other) {
 	// Width and height of vehicle
 	mHeight = other.mHeight;
 	mWidth = other.mWidth;
-
-	// Limit left and right X
-	mLeft = other.mLeft;
-	mRight = other.mRight;
-
-	// Speed of vehicle
-	mSpeed = other.mSpeed;
 
 	// Vehicle form
 	mVehicleLeftForm = other.mVehicleLeftForm;

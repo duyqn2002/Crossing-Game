@@ -1,8 +1,6 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <Windows.h>
-
 #include "Constants.h"
 #include "CPOINT2D.h"
 #include "Texture.h"
@@ -17,21 +15,23 @@ private:
 	HANDLE m_hScreenBufferTwo;
 	HANDLE* m_hActiveScreenBuffer;
 	HANDLE* m_hBackgroundScreenBuffer;
-public:
+
 	Console();
 	Console(unsigned int, unsigned int);
 	Console(unsigned int, unsigned int, unsigned int, unsigned int);
+public:
+	static Console* getConsole(unsigned int, unsigned int, unsigned int, unsigned int);
 	Console(const Console&);
 	~Console();
 
 	unsigned int Height() const;
 	unsigned int Width() const;
 
-	void FixedConsoleWindow() const;
-	void DrawPixels(int, int, char, COLOUR = COLOUR::WHITE, int = 1) const;
-	void DrawBorder(CPOINT2D, CPOINT2D, COLOUR = COLOUR::WHITE) const;
-	void DrawObject(int, int, const Texture&, COLOUR = COLOUR::WHITE) const;
-	void ClearScreen() const;
+	void FixedConsoleWindow();
+	void DrawPixels(int, int, char, COLOUR = COLOUR::WHITE, int = 1);
+	void DrawBorder(CPOINT2D, CPOINT2D, COLOUR = COLOUR::WHITE);
+	void DrawObject(int, int, const Texture&, COLOUR = COLOUR::WHITE);
+	void ClearScreen();
 	void Render();
 };
 

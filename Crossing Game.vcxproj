@@ -144,6 +144,7 @@
     <ClCompile Include="CCAR.cpp" />
     <ClCompile Include="CDOG.cpp" />
     <ClCompile Include="CGAME.cpp" />
+    <ClCompile Include="CLANE.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CPEOPLE.cpp" />
     <ClCompile Include="CPOINT2D.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="CCAR.h" />
     <ClInclude Include="CDOG.h" />
     <ClInclude Include="CGAME.h" />
+    <ClInclude Include="CLANE.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="CPEOPLE.h" />
@@ -168,7 +170,10 @@
     <ClInclude Include="CVEHICLE.h" />
     <ClInclude Include="HelpFunctions.h" />
     <ClInclude Include="Init_Static.h" />
+    <ClInclude Include="ITrafficLightState.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TrafficLightGreenState.h" />
+    <ClInclude Include="TrafficLightRedState.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="text.txt" />
