@@ -2,11 +2,10 @@
 #define CANIMAL_H
 
 #include "Console.h"
+#include "Movable.h"
+#include "Tellable.h"
 
-class CANIMAL {
-private:
-	static vector<CANIMAL*> m_vecSampleObjects;
-
+class CANIMAL : public Movable, public Tellable {
 protected:
 	// Current position
 	CPOINT2D mCurrPos;
@@ -20,15 +19,12 @@ protected:
 	Texture mAnimalRightForm;
 	Texture* mCurrAnimalForm;
 
-	COLOUR mAnimalColour = DEFAULT_COLOUR;
+	COLOUR mAnimalColour;
 
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
 
-	static CANIMAL* createObject(const ENEMY&);
-
-	virtual ENEMY className() = 0;
 	virtual CANIMAL* Clone() = 0;
 
 	// Setter
@@ -51,10 +47,7 @@ public:
 	virtual void Tell() {};
 
 	// Render method
-	virtual void drawToConsole(int,int,Console&);
-
-protected:
-	static CANIMAL* addSample(CANIMAL*);
+	virtual void drawToConsole(Console&, int, int);
 };
 
 #endif // CANIMAL_H

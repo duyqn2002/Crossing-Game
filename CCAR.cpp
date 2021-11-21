@@ -44,3 +44,7 @@ CCAR::CCAR(const CCAR& other) {
 	// Color for vehicle
 	mVehicleColour = other.mVehicleColour;
 }
+
+CVEHICLE* CCAR::Clone() {
+	return new CCAR(*this);
+}

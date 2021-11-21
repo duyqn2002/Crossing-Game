@@ -52,6 +52,40 @@ Texture& Texture::operator= (const char* body) {
 	return *this;
 }
 
+bool Texture::operator==(const Texture& other) const
+{
+	if (this == &other)
+		return true;
+
+	if(other.mBody != mBody)
+		return false;
+
+	return true;
+}
+
+bool Texture::operator!=(const Texture& other) const
+{
+	return !operator==(other);
+}
+
+void Texture::LoadFromFile(const std::string& filePath) {
+	std::string completeFilePath = filePath + ".txt";
+	std::ifstream ifs(completeFilePath.c_str());
+	if (!ifs) {
+		return;
+	}
+
+	std::string temp;
+
+	while (getline(ifs, temp, '\n'))
+	{
+		mBody.push_back(temp);
+	}
+
+	mHeight = findHeight(mBody);
+	mWidth = findWidth(mBody);
+}
+
 void Texture::AddLine(const std::string& part) {
 	if (mWidth != part.size())
 		return;

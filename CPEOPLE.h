@@ -35,6 +35,8 @@ public:
 	// Setter
 	void setXY(int, int);
 	void setLimitZone(CPOINT2D, CPOINT2D);
+	void animationWhenDead(Console&);
+	void Dead();
 
 	// Getter
 	int getX() const;
@@ -47,11 +49,11 @@ public:
 	void Left(int);
 	void Right(int);
 	void Down(int);
+
 	void Move(KEY, int);
 
 	// Check impact
-	template <class T>
-	bool isImpact(const CLANE<T>&);
+	bool isImpact(const CLANE&);
 
 	// Don't let the people go outside the playing area
 	void Clip();
@@ -64,21 +66,6 @@ public:
 	void drawPeople(Console&);
 };
 
-template <class T>
-bool CPEOPLE::isImpact(const CLANE<T>& Lane) {
-	bool isImpact = false;
 
-	for (int i = 0; i < Lane.size(); i++) {
-		if (getX() + Width() >= Lane[i].getX() && getX() <= Lane[i].getX() + Lane[i].Width()) {
-			isImpact = true;
-			break;
-		}
-	}
-
-	// If impact with object, people will die
-	if (isImpact)
-		mState = false;
-	return isImpact;
-}
 
 #endif // CPEOPLE_H

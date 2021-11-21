@@ -4,13 +4,10 @@
 #include "CVEHICLE.h"
 
 class CCAR : public CVEHICLE {
-private:
-	INIT_MEMBER(CVEHICLE, CCAR);
 public:
 	CCAR();
 	CCAR(const CCAR&);
-
-	INIT_METHOD(CVEHICLE, CCAR);
+	virtual CVEHICLE* Clone();
 };
 
 #endif // CCAR_H

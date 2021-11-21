@@ -8,6 +8,8 @@ Console::Console() {
 
 	mHeight = 1;
 	mWidth = 1;
+
+	SetCursor(false);
 }
 
 Console::Console(unsigned int width, unsigned int height) : Console() {
@@ -95,6 +97,16 @@ unsigned int Console::Width() const {
 	return mWidth;
 }
 
+void Console::SetCursor(bool visible)
+{
+	CONSOLE_CURSOR_INFO lpCursor;
+	lpCursor.bVisible = visible;
+	lpCursor.dwSize = 20;
+	SetConsoleCursorInfo(*m_hActiveScreenBuffer, &lpCursor);
+	SetConsoleCursorInfo(*m_hBackgroundScreenBuffer, &lpCursor);
+
+}
+
 void Console::FixedConsoleWindow() {
 	HWND consoleWindow = GetConsoleWindow();
 	LONG style = GetWindowLong(consoleWindow, GWL_STYLE);
@@ -158,6 +170,7 @@ void Console::ClearScreen() {
 
 	GetConsoleScreenBufferInfo(*m_hBackgroundScreenBuffer, &bufferWindowInfo);
 	FillConsoleOutputCharacterA(*m_hBackgroundScreenBuffer, ' ', bufferWindowInfo.dwSize.X * bufferWindowInfo.dwSize.Y, topLeft, &written);
+	FillConsoleOutputAttribute(*m_hBackgroundScreenBuffer, 0, bufferWindowInfo.dwSize.X * bufferWindowInfo.dwSize.Y, topLeft, &written);
 	SetConsoleCursorPosition(*m_hBackgroundScreenBuffer, topLeft);
 }
 

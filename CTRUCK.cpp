@@ -44,5 +44,6 @@ CTRUCK::CTRUCK(const CTRUCK& other) {
 	mVehicleColour = other.mVehicleColour;
 }
 
-
-
+CVEHICLE* CTRUCK::Clone() {
+	return new CTRUCK(*this);
+}

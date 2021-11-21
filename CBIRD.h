@@ -4,12 +4,10 @@
 #include"CANIMAL.h"
 
 class CBIRD : public CANIMAL {
-private:
-	INIT_MEMBER(CANIMAL, CBIRD);
 public:
 	CBIRD();
 	CBIRD(const CBIRD&);
-	INIT_METHOD(CANIMAL, CBIRD);
+	virtual CANIMAL* Clone();
 };
 
 

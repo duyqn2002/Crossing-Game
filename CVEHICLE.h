@@ -2,18 +2,16 @@
 #define CVEHICLE_H
 
 #include "Console.h"
+#include "Movable.h"
 
-class CVEHICLE {
-private:
-	static vector<CVEHICLE*> m_vecSampleObjects;
-
+class CVEHICLE : public Movable{
 protected:
 	// Current position
 	CPOINT2D mCurrPos;
 
 	// Width and height of vehicle
-	int mHeight = 0;
-	int mWidth = 0;
+	int mHeight;
+	int mWidth;
 
 	// Vehicle form
 	Texture mVehicleLeftForm;
@@ -21,15 +19,10 @@ protected:
 	Texture* mCurrVehicleForm;
 
 	// Color for vehicle
-	COLOUR mVehicleColour = DEFAULT_COLOUR;
-
+	COLOUR mVehicleColour;
 public:
 	CVEHICLE() = default;
 	virtual ~CVEHICLE() = default;
-
-	static CVEHICLE* createObject(const ENEMY&);
-
-	virtual ENEMY className() = 0;
 	virtual CVEHICLE* Clone() = 0;
 
 	// Setter
@@ -49,10 +42,7 @@ public:
 	void Move(int, int);
 
 	// Render method
-	virtual void drawToConsole(int,int,Console&);
-
-protected:
-	static CVEHICLE* addSample(CVEHICLE*);
+	virtual void drawToConsole(Console&, int, int);
 };
 
 #endif // CVEHICLE_H

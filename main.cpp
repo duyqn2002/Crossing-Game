@@ -2,6 +2,6 @@
 
 int main() {
 	CGAME* game = CGAME::getGame();
-	game->startGame();
+	game->Run();
 	return 0;
 }

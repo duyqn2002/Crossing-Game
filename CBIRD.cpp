@@ -3,15 +3,17 @@
 CBIRD::CBIRD() {
 	mCurrPos = CPOINT2D(0, 0);
 
-	mAnimalLeftForm = " ,_ \n"
+	mAnimalLeftForm = \
+		" ,_ \n"
 		">' )\n"
 		"( ( \\\n"
-		"mrf''|\\n";
+		"''|\\";
 
-	mAnimalRightForm = " _. \n"
-		"( '<\n"
+	mAnimalRightForm = \
+		"  _. \n"
+		" ( '<\n"
 		"/ ) )\n"
-		"/|''jnm\n";
+		" /|''";
 
 	mHeight = mAnimalLeftForm.Height();
 	mWidth = mAnimalLeftForm.Width();
@@ -43,4 +45,8 @@ CBIRD::CBIRD(const CBIRD& other) {
 
 	// Color for animal
 	mAnimalColour = other.mAnimalColour;
+}
+
+CANIMAL* CBIRD::Clone() {
+	return new CBIRD(*this);
 }

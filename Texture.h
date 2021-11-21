@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <fstream>
 
 class Texture {
 private:
@@ -21,7 +22,11 @@ public:
 	// Operator
 	Texture& operator= (const char*);
 
+	bool operator==(const Texture&) const;
+	bool operator!=(const Texture&) const;
+
 	// Method
+	void LoadFromFile(const std::string&);
 	void AddLine(const std::string&);
 
 	// Getter

@@ -1,22 +1,5 @@
 #include "CANIMAL.h"
 
-CANIMAL* CANIMAL::addSample(CANIMAL* animal) {
-	if (animal == nullptr)
-		return nullptr;
-	m_vecSampleObjects.push_back(animal);
-	return animal;
-}
-
-CANIMAL* CANIMAL::createObject(const ENEMY& className) {
-	for (auto object : m_vecSampleObjects) {
-		if (object != nullptr && object->className() == className) {
-			return object->Clone();
-		}
-	}
-
-	return nullptr;
-}
-
 void CANIMAL::setX(int x) {
 	mCurrPos.setX(x);
 }
@@ -65,7 +48,7 @@ void CANIMAL::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
-void CANIMAL::drawToConsole(int leftLimit,int rightLimit,Console& console) {
+void CANIMAL::drawToConsole(Console& console,int leftLimit, int rightLimit) {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 

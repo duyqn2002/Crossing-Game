@@ -43,3 +43,7 @@ CDOG::CDOG(const CDOG& other) {
 	// Color for animal
 	mAnimalColour = other.mAnimalColour;
 }
+
+CANIMAL* CDOG::Clone() {
+	return new CDOG(*this);
+}

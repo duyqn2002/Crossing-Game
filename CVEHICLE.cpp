@@ -1,22 +1,5 @@
 #include "CVEHICLE.h"
 
-CVEHICLE* CVEHICLE::addSample(CVEHICLE* vehicle) {
-	if (vehicle == nullptr)
-		return nullptr;
-	m_vecSampleObjects.push_back(vehicle);
-	return vehicle;
-}
-
-CVEHICLE* CVEHICLE::createObject(const ENEMY& className) {
-	for (auto object : m_vecSampleObjects) {
-		if (object != nullptr && object->className() == className) {
-			return object->Clone();
-		}
-	}
-
-	return nullptr;
-}
-
 void CVEHICLE::setX(int x) {
 	mCurrPos.setX(x);
 }
@@ -65,7 +48,7 @@ void CVEHICLE::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
-void CVEHICLE::drawToConsole(int leftLimit,int rightLimit,Console& console) {
+void CVEHICLE::drawToConsole(Console& console ,int leftLimit, int rightLimit ) {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 

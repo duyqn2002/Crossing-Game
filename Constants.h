@@ -43,22 +43,23 @@ constexpr float SCALE_Y = 1;
 #define DOG_COLOUR   COLOUR::GREEN
 #define BIRD_COLOUR  COLOUR:: RED
 
-// Macro
-#define INIT_BASE(BASE) std::vector<BASE*> BASE::m_vecSampleObjects;
-#define INIT_MEMBER(BASE_CLASS,CHILD_CLASS) static BASE_CLASS* BootTrapObject##CHILD_CLASS
-#define INIT_OBJECT(BASE_CLASS,CHILD_CLASS) BASE_CLASS* CHILD_CLASS::BootTrapObject##CHILD_CLASS = BASE_CLASS::addSample(new CHILD_CLASS())
-#define INIT_METHOD(BASE_CLASS,CHILD_CLASS) virtual ENEMY className() { return ENEMY::##CHILD_CLASS;} \
-									virtual BASE_CLASS* Clone() { return new CHILD_CLASS(*this);}
-
 enum class KEY {
 	UP = 'W',
 	DOWN = 'S',
 	LEFT = 'A',
 	RIGHT = 'D',
-	STAND_STILL = ' ',
+	SPACE = ' ',
 
+	RETURN = '\r',
 	ESC = (char)27,
-	PAUSE = 'P',
+
+	YES = 'Y',
+	NO = 'N',
+	SAVE_GAME = 'L',
+	LOAD_GAME = 'T',
+	PAUSE_GAME = 'P',
+
+	NULL_CHAR = '\0',
 };
 
 enum class COLOUR {

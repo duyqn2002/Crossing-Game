@@ -54,10 +54,16 @@
     <ClCompile Include="CBIRD.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Init_Static.cpp">
+    <ClCompile Include="CLANE.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CLANE.cpp">
+    <ClCompile Include="CCenterMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficLightGreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TrafficLightRedState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,9 +107,6 @@
     <ClInclude Include="CBIRD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Init_Static.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CLANE.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -114,6 +117,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TrafficLightRedState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCenterMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Movable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnemyFactory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tellable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

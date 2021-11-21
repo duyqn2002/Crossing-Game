@@ -4,12 +4,15 @@
 #include "Console.h"
 #include <ctime>
 
-class CVEHICLE;
-class CANIMAL;
-
-template <class ObjectType> class CLANE;
+class CLANE;
 
 class ITrafficLightState {
+protected:
+	CLANE* mLane;
+	clock_t mStartTime;
+	clock_t mEndTime;
+	int mInterval;
+
 public:
 	virtual void setStartTime(clock_t) = 0;
 	virtual void Timer() = 0;

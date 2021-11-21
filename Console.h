@@ -19,14 +19,16 @@ private:
 	Console();
 	Console(unsigned int, unsigned int);
 	Console(unsigned int, unsigned int, unsigned int, unsigned int);
+	Console(const Console&);
 public:
 	static Console* getConsole(unsigned int, unsigned int, unsigned int, unsigned int);
-	Console(const Console&);
+	
 	~Console();
 
 	unsigned int Height() const;
 	unsigned int Width() const;
 
+	void SetCursor(bool);
 	void FixedConsoleWindow();
 	void DrawPixels(int, int, char, COLOUR = COLOUR::WHITE, int = 1);
 	void DrawBorder(CPOINT2D, CPOINT2D, COLOUR = COLOUR::WHITE);

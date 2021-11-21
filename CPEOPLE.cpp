@@ -49,26 +49,27 @@ CPEOPLE::CPEOPLE(const CPEOPLE& other) {
 }
 
 CPEOPLE& CPEOPLE::operator= (const CPEOPLE& other) {
-	if (this != &other) {
-		mCurrPos = other.mCurrPos;
+	if (this == &other)
+		return *this;
 
-		mTopLeft = other.mTopLeft;
-		mBottomRight = other.mBottomRight;
+	mCurrPos = other.mCurrPos;
 
-		mState = other.mState;
+	mTopLeft = other.mTopLeft;
+	mBottomRight = other.mBottomRight;
 
-		mPeopleLeftForm = other.mPeopleLeftForm;
+	mState = other.mState;
 
-		mPeopleRightForm = other.mPeopleRightForm;
+	mPeopleLeftForm = other.mPeopleLeftForm;
 
-		mHeight = other.mHeight;
-		mWidth = other.mWidth;
+	mPeopleRightForm = other.mPeopleRightForm;
 
-		if (other.mCurrForm == &other.mPeopleLeftForm)
-			mCurrForm = &mPeopleLeftForm;
-		else
-			mCurrForm = &mPeopleRightForm;
-	}
+	mHeight = other.mHeight;
+	mWidth = other.mWidth;
+
+	if (other.mCurrForm == &other.mPeopleLeftForm)
+		mCurrForm = &mPeopleLeftForm;
+	else
+		mCurrForm = &mPeopleRightForm;
 
 	return *this;
 }
@@ -81,6 +82,16 @@ void CPEOPLE::setXY(int x, int y) {
 void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
 	mTopLeft = topLeft;
 	mBottomRight = bottomRight;
+}
+
+void CPEOPLE::animationWhenDead(Console& console)
+{
+
+}
+
+
+void CPEOPLE::Dead() {
+	mState = false;
 }
 
 int CPEOPLE::getX() const {
@@ -166,6 +177,22 @@ void CPEOPLE::Move(KEY direction, int delta) {
 	mWidth = mCurrForm->Width();
 
 	Clip();
+}
+
+bool CPEOPLE::isImpact(const CLANE& Lane) {
+	bool isImpact = false;
+
+	for (int i = 0; i < Lane.size(); i++) {
+		if (getX() + Width() >= Lane[i].getX() && getX() <= Lane[i].getX() + Lane[i].Width()) {
+			isImpact = true;
+			break;
+		}
+	}
+
+	// If impact with object, people will die
+	if (isImpact)
+		mState = false;
+	return isImpact;
 }
 
 bool  CPEOPLE::isFinish() const {
