@@ -3,12 +3,14 @@
 CPEOPLE::CPEOPLE() {
 	mState = true;
 
-	mPeopleLeftForm = "\\o~\n"
+	mPeopleLeftForm = \
+		"\\o~\n"
 		" |\\\n"
 		" | \n"
 		"/ \\";
 
-	mPeopleRightForm = "~o/\n"
+	mPeopleRightForm = \
+		"~o/\n"
 		"/| \n"
 		" | \n"
 		"/ \\";
@@ -83,12 +85,6 @@ void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
 	mTopLeft = topLeft;
 	mBottomRight = bottomRight;
 }
-
-void CPEOPLE::animationWhenDead(Console& console)
-{
-
-}
-
 
 void CPEOPLE::Dead() {
 	mState = false;

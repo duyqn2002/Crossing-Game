@@ -17,7 +17,6 @@ private:
 	HANDLE* m_hBackgroundScreenBuffer;
 
 	Console();
-	Console(unsigned int, unsigned int);
 	Console(unsigned int, unsigned int, unsigned int, unsigned int);
 	Console(const Console&);
 public:

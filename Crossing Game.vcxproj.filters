@@ -66,6 +66,15 @@
     <ClCompile Include="TrafficLightRedState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CScoreBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CMessagePopup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CAlienShip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HelpFunctions.h">
@@ -129,6 +138,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tellable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CScoreBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMessagePopup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CAlienShip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

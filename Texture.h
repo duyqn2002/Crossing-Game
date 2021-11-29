@@ -21,6 +21,7 @@ public:
 
 	// Operator
 	Texture& operator= (const char*);
+	Texture& operator= (std::string&);
 
 	bool operator==(const Texture&) const;
 	bool operator!=(const Texture&) const;

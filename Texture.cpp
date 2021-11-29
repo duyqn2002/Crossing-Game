@@ -52,6 +52,12 @@ Texture& Texture::operator= (const char* body) {
 	return *this;
 }
 
+Texture& Texture::operator=(std::string& body)
+{
+	operator=(body.c_str());
+	return *this;
+}
+
 bool Texture::operator==(const Texture& other) const
 {
 	if (this == &other)

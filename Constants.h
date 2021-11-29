@@ -16,8 +16,8 @@
 using namespace std;
 
 // Default setting for game
-constexpr short WINDOW_BUFFER_HEIGHT = 50;
 constexpr short WINDOW_BUFFER_WIDTH = 150;
+constexpr short WINDOW_BUFFER_HEIGHT = 50;
 constexpr short FONT_HEIGHT = 12;
 constexpr short FONT_WIDTH = 12;
 
@@ -26,7 +26,7 @@ constexpr short MAX_VEHICLES = 3;
 constexpr short MAX_ANIMALS = 3;
 
 // Position of top left corner of playing area
-constexpr short TOP_LEFT_X = 1;
+constexpr short TOP_LEFT_X = 0;
 constexpr short TOP_LEFT_Y = 0;
 
 // Scale of the playing area
@@ -75,9 +75,9 @@ enum class COLOUR {
 };
 
 enum class LEVEL {
-	EASY = 1,
-	MEDIUM = 2,
-	HARD = 3
+	EASY = 2,
+	MEDIUM = 3,
+	HARD = 4,
 };
 
 enum class ENEMY {

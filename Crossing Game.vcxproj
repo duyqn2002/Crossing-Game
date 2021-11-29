@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CAlienShip.cpp" />
     <ClCompile Include="CANIMAL.cpp" />
     <ClCompile Include="CBIRD.cpp" />
     <ClCompile Include="CCAR.cpp" />
@@ -146,9 +147,11 @@
     <ClCompile Include="CGAME.cpp" />
     <ClCompile Include="CLANE.cpp" />
     <ClCompile Include="CCenterMenu.cpp" />
+    <ClCompile Include="CMessagePopup.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CPEOPLE.cpp" />
     <ClCompile Include="CPOINT2D.cpp" />
+    <ClCompile Include="CScoreBoard.cpp" />
     <ClCompile Include="CTRUCK.cpp" />
     <ClCompile Include="CVEHICLE.cpp" />
     <ClCompile Include="HelpFunctions.cpp" />
@@ -158,6 +161,7 @@
     <ClCompile Include="TrafficLightRedState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CAlienShip.h" />
     <ClInclude Include="CANIMAL.h" />
     <ClInclude Include="CBIRD.h" />
     <ClInclude Include="CCAR.h" />
@@ -166,10 +170,12 @@
     <ClInclude Include="CGAME.h" />
     <ClInclude Include="CLANE.h" />
     <ClInclude Include="CCenterMenu.h" />
+    <ClInclude Include="CMessagePopup.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="CPEOPLE.h" />
     <ClInclude Include="CPOINT2D.h" />
+    <ClInclude Include="CScoreBoard.h" />
     <ClInclude Include="CTRUCK.h" />
     <ClInclude Include="CVEHICLE.h" />
     <ClInclude Include="HelpFunctions.h" />

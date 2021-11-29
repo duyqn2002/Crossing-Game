@@ -4,12 +4,17 @@ CGAME::CGAME()  {
 	isPause = false;
 	isPlaying = false;
 	isPlayed = false;
-	m_pConsole = Console::getConsole(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
+	mConsole = Console::getConsole(WINDOW_BUFFER_WIDTH, WINDOW_BUFFER_HEIGHT, FONT_WIDTH, FONT_HEIGHT);
 	
+	mLevel = 1;
+	mMinEnemies = 1;
+	mMaxEnemies = mMinEnemies;
+
 	// Set obj
 	setMainMenu();
 	setSettingMenu();
 	setPlayingArea(SCALE_X, SCALE_Y);
+	setScoreBoard();
 	setObjects();
 	setPeople();
 }
@@ -21,13 +26,71 @@ CGAME* CGAME::getGame() {
 
 CGAME::~CGAME() {}
 
+void CGAME::setSettingMenu() {
+	Texture gameTitle = \
+		" ######  ######## ######## ######## #### ##    ##  ######\n"
+		"##    ## ##          ##       ##     ##  ###   ## ##    ##\n"
+		"##       ##          ##       ##     ##  ####  ## ##\n"
+		" ######  ######      ##       ##     ##  ## ## ## ##   ####\n"
+		"      ## ##          ##       ##     ##  ##  #### ##    ##\n"
+		"##    ## ##          ##       ##     ##  ##   ### ##    ##\n"
+		" ######  ########    ##       ##    #### ##    ##  ######";
+
+	mSettingMenu.setMenuTitle(gameTitle, COLOUR::PINK);
+	mSettingMenu.setMarginTop(4);
+	mSettingMenu.addOption("Audio");
+	mSettingMenu.addOption("Back to main menu", bind(&CCenterMenu::QuitMenu, &mSettingMenu));
+}
+
+void CGAME::setMainMenu() {
+	Texture gameTitle = \
+		" ######  ########   #######   ######   ######  #### ##    ##  ######      ######      ###    ##     ## ########\n"
+		"##    ## ##     ## ##     ## ##    ## ##    ##  ##  ###   ## ##    ##    ##    ##    ## ##   ###   ### ##       \n"
+		"##       ##     ## ##     ## ##       ##        ##  ####  ## ##          ##         ##   ##  #### #### ##       \n"
+		"##       ########  ##     ##  ######   ######   ##  ## ## ## ##   ####   ##   #### ##     ## ## ### ## ######   \n"
+		"##       ##   ##   ##     ##       ##       ##  ##  ##  #### ##    ##    ##    ##  ######### ##     ## ##       \n"
+		"##    ## ##    ##  ##     ## ##    ## ##    ##  ##  ##   ### ##    ##    ##    ##  ##     ## ##     ## ##       \n"
+		" ######  ##     ##  #######   ######   ######  #### ##    ##  ######      ######   ##     ## ##     ## ######## \n";
+
+	mMainMenu.setMenuTitle(gameTitle);
+	mMainMenu.setMarginTop(4);
+	mMainMenu.addOption("New Game", bind(&CGAME::StartGame, this));
+	mMainMenu.addOption("Load Game", bind(&CGAME::loadGame, this));
+	mMainMenu.addOption("Setting", bind(&CCenterMenu::Run, &mSettingMenu, ref(*mConsole)));
+	mMainMenu.addOption("Quit", bind(&CCenterMenu::QuitMenu, &mMainMenu));
+}
+
+void CGAME::setPlayingArea(float scaleX, float scaleY) {
+	// Set the size of the playing area
+	// 0,0 is the coord of top left
+	int playingAreaWidth = mConsole->Width() * scaleX;
+	int playingAreaHeight = mConsole->Height() * scaleY;
+
+	// Set the top left point of the playing area
+	mTopLeft = CPOINT2D(TOP_LEFT_X, TOP_LEFT_Y);
+	mBottomRight = CPOINT2D(TOP_LEFT_X + playingAreaWidth - 1, TOP_LEFT_Y + playingAreaHeight - 1);
+}
+
+void CGAME::setScoreBoard()
+{
+	CPOINT2D topLeftCoord = CPOINT2D(mBottomRight.getX() + 1, mTopLeft.getY());
+	int playingAreaWidth = mBottomRight.getX() - mTopLeft.getX() + 1;
+
+	int scoreBoardWidth = mConsole->Width() - playingAreaWidth;
+	int scoreBoarHeight = mConsole->Height() * SCALE_Y;
+
+	mScoreBoard = CScoreBoard::getScoreBoard();
+	mScoreBoard->setPosTopLeftCorner(topLeftCoord);
+	mScoreBoard->resize(scoreBoardWidth, scoreBoarHeight);
+}
+
 void CGAME::setObjects() {
 	int left = mTopLeft.getX();
 	int right = mBottomRight.getX();
 	int y = mTopLeft.getY() + 1;
 
 	for (const auto& LaneInfo : mLanes) {
-		int randomQty = RandomInt(3, 2);
+		int randomQty = RandomInt(mMaxEnemies, mMinEnemies);
 		CLANE mLane(left, right);
 		mLane.setY(y);
 		mLane.setSpeed(LaneInfo.first);
@@ -59,14 +122,12 @@ void CGAME::setPeople() {
 	mPeople = CPEOPLE(x, y, mTopLeft, mBottomRight);
 }
 
-void CGAME::setPlayingArea(float scaleX,float scaleY) {
-	// Set the size of the playing area
-	int mPlayingAreaHeight = m_pConsole->Height() * scaleY - 1;
-	int mPlayingAreaWdth = m_pConsole->Width() * scaleX - 1;
+void CGAME::setAlienShip()
+{
+	int alienPosX = RandomInt(mBottomRight.getX(), mTopLeft.getY() + 1);
+	int alienPosY = RandomInt(mTopLeft.getY(), mTopLeft.getY() - 10);
 
-	// Set the top left point of the playing area
-	mTopLeft = CPOINT2D(TOP_LEFT_X, TOP_LEFT_Y);
-	mBottomRight = CPOINT2D(TOP_LEFT_X + mPlayingAreaWdth, TOP_LEFT_Y + mPlayingAreaHeight);
+	mAlienShip.setXY(alienPosX, alienPosY);
 }
 
 CPEOPLE CGAME::getPeople() const {
@@ -84,54 +145,71 @@ CLANE CGAME::getEnemyLane()
 
 void CGAME::drawPlayingArea() {
 	// Draw the border line
-	m_pConsole->DrawBorder(mTopLeft, mBottomRight, PLAYING_AREA_COLOUR);
+	mConsole->DrawBorder(mTopLeft, mBottomRight, PLAYING_AREA_COLOUR);
 }
 
 void  CGAME::drawEnemies() {
 	for (auto& Lane : mLaneOfEnemies) {
-		Lane.drawObjectsOnLane(*m_pConsole);
+		Lane.drawObjectsOnLane(*mConsole);
 	}
 }
 
 void CGAME::drawGame() {
 	// Draw border
 	drawPlayingArea();
-
+	mScoreBoard->drawScoreBoard(*mConsole);
 	// Draw people
-	mPeople.drawPeople(*m_pConsole);
+	mPeople.drawPeople(*mConsole);
 
 	// Draw object
 	drawEnemies();
+}
+
+void CGAME::renderWhenPlayerDie() {
+	while (!mAlienShip.isCapturePeople()) {
+		mConsole->ClearScreen();
+
+		drawGame();
+		mAlienShip.drawToConsole(*mConsole, mTopLeft.getX(), mBottomRight.getY());
+		mAlienShip.updatePos();
+		
+		mConsole->Render();
+
+		Sleep(30);
+	}
 }
 
 void CGAME::renderGameThread(KEY* MOVING) {
 	while (isPlaying) {
 		if (isPause)
 			continue;
+
 		// Clear the old screen
-		m_pConsole->ClearScreen();
+		mConsole->ClearScreen();
 
 		if (!mPeople.isDead()) {
 			updatePosPeople(*MOVING);
+			updatePosEnemies();
+
+			if (mPeople.isImpact(getEnemyLane())) {
+			/*	mAlienShip.setPeoplePos(getPeople().getX(), getPeople().getY());
+
+				thread t = thread(&CGAME::renderWhenPlayerDie, this);
+				t.join();
+
+				mPeople.Dead();*/
+			}
 		}
 		*MOVING = KEY::SPACE;
 
-		updatePosEnemies();
-
 		drawGame();
-
-		if (mPeople.isImpact(getEnemyLane())) {
-			break;
-			/*mPeople.animationWhenDead(*m_pConsole);
-			mPeople.Dead();*/
-		}
 
 		if (mPeople.isFinish()) {
 			nextLevel();
 		}
 
 		// Render out console
-		m_pConsole->Render();
+		mConsole->Render();
 		Sleep(30);
 	}
 }
@@ -141,6 +219,22 @@ void CGAME::resetGame() {
 
 	setObjects();
 	setPeople();
+	setAlienShip();
+}
+
+void CGAME::nextLevel() {
+	if (mLevel == 3){
+		mLevel = 1;
+		mMinEnemies = 1;
+		mMaxEnemies = mMinEnemies;
+	}
+	else {
+		mLevel++;
+		mMinEnemies++;
+		mMaxEnemies = mMinEnemies + 1;
+	}
+	
+	resetGame();
 }
 
 void CGAME::playGame() {
@@ -200,48 +294,6 @@ void CGAME::StartGame() {
 	}
 }
 
-void CGAME::setSettingMenu() {
-	Texture gameTitle = \
-		" ######  ######## ######## ######## #### ##    ##  ######\n"
-		"##    ## ##          ##       ##     ##  ###   ## ##    ##\n"
-		"##       ##          ##       ##     ##  ####  ## ##\n"
-		" ######  ######      ##       ##     ##  ## ## ## ##   ####\n"
-		"      ## ##          ##       ##     ##  ##  #### ##    ##\n"
-		"##    ## ##          ##       ##     ##  ##   ### ##    ##\n"
-		" ######  ########    ##       ##    #### ##    ##  ######";
-
-	mSettingMenu.setMenuTitle(gameTitle,COLOUR::PINK);
-	mSettingMenu.setMarginTop(4);
-	mSettingMenu.addOption("Audio");
-	mSettingMenu.addOption("Custom color");
-	mSettingMenu.addOption("Back to main menu", bind(&CCenterMenu::QuitMenu, &mSettingMenu));
-}
-
-void CGAME::setMainMenu() {
-	/*Texture gameTitle = "                                                     \n"
-		"     | |               | |                        | |\n"
-		"  __| | _ _ __  __| |    _ _ __   __ _  __| |\n"
-		" / __| __| '__/ _ \\/ _ \\ __|  | '__/ _ \\ / _ |/ _ |\n"
-		" \\__ \\ |_| | |  _/  __/ |   | | | (_) | (_| | (_| |\n"
-		" |___/\\__|_|  \\___|\\___|\\__|  |_|  \\___/ \\__,_|\\__,_|\n";*/
-
-
-	Texture gameTitle = \
-		" ######  ########   #######   ######   ######  #### ##    ##  ######      ######      ###    ##     ## ########\n"
-		"##    ## ##     ## ##     ## ##    ## ##    ##  ##  ###   ## ##    ##    ##    ##    ## ##   ###   ### ##       \n"
-		"##       ##     ## ##     ## ##       ##        ##  ####  ## ##          ##         ##   ##  #### #### ##       \n"
-		"##       ########  ##     ##  ######   ######   ##  ## ## ## ##   ####   ##   #### ##     ## ## ### ## ######   \n"
-		"##       ##   ##   ##     ##       ##       ##  ##  ##  #### ##    ##    ##    ##  ######### ##     ## ##       \n"
-		"##    ## ##    ##  ##     ## ##    ## ##    ##  ##  ##   ### ##    ##    ##    ##  ##     ## ##     ## ##       \n"
-		" ######  ##     ##  #######   ######   ######  #### ##    ##  ######      ######   ##     ## ##     ## ######## \n";
-
-	mMainMenu.setMenuTitle(gameTitle);
-	mMainMenu.setMarginTop(4);
-	mMainMenu.addOption("New Game", bind(&CGAME::StartGame, this));
-	mMainMenu.addOption("Load Game", bind(&CGAME::loadGame, this));
-	mMainMenu.addOption("Setting", bind(&CCenterMenu::Run, &mSettingMenu, ref(*m_pConsole)));
-	mMainMenu.addOption("Quit", bind(&CCenterMenu::QuitMenu, &mMainMenu));
-}
 
 void CGAME::loadGame() {}
 
@@ -273,5 +325,5 @@ void CGAME::updatePosEnemies() {
 }
 
 void CGAME::Run() {
-	mMainMenu.Run(*m_pConsole);
+	mMainMenu.Run(*mConsole);
 }

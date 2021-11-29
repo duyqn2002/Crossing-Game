@@ -35,7 +35,6 @@ public:
 	// Setter
 	void setXY(int, int);
 	void setLimitZone(CPOINT2D, CPOINT2D);
-	void animationWhenDead(Console&);
 	void Dead();
 
 	// Getter
@@ -65,7 +64,5 @@ public:
 	// Render people function
 	void drawPeople(Console&);
 };
-
-
 
 #endif // CPEOPLE_H

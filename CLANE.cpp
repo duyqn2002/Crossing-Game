@@ -234,7 +234,7 @@ void CLANE::generateObjectsOnLane(const ENEMY& className, int numberOfObjects)
 	else {
 		left = right;
 		right += laneWidth;
-		randomX = left + RandomInt(laneWidth / 5, 1);
+			randomX = left + RandomInt(laneWidth / 5, 1);
 	}
 
 	Object->setXY(randomX, mY);

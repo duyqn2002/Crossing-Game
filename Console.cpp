@@ -12,24 +12,22 @@ Console::Console() {
 	SetCursor(false);
 }
 
-Console::Console(unsigned int width, unsigned int height) : Console() {
-	// Construct a console window with height and width
-	SMALL_RECT rectWindow = { 0 ,0, width, height };
-
-	SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow);
-	SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow);
-
+Console::Console(unsigned int width, unsigned int height, unsigned int fontw, unsigned int fonth) : Console() {
+	// Construct a console window with height and width, font width and font height
 	mHeight = height;
 	mWidth = width;
 
-	FixedConsoleWindow();
-}
+	// Set the console width and height
+	SMALL_RECT rectWindow = { 0, 0, (short)mWidth - 1, (short)mHeight - 1 };
+	if (!SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow))
+		return;
+	if (!SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow))
+		return;
 
-Console::Console(unsigned int width, unsigned int height, unsigned int fontw, unsigned int fonth) : Console(width, height) {
-	// Construct a console window with height and width, font width and font height
+	SetConsoleActiveScreenBuffer(*m_hActiveScreenBuffer);
 
 	// Set the screen buffer size
-	COORD coord = { (short)width, (short)height };
+	COORD coord = { (short)mWidth, (short)mHeight};
 	if (!SetConsoleScreenBufferSize(m_hScreenBufferOne, coord))
 		return;
 	if (!SetConsoleScreenBufferSize(m_hScreenBufferTwo, coord))
@@ -41,32 +39,17 @@ Console::Console(unsigned int width, unsigned int height, unsigned int fontw, un
 	cfi.nFont = 0;
 	cfi.dwFontSize.X = fontw;
 	cfi.dwFontSize.Y = fonth;
-
 	if (!SetCurrentConsoleFontEx(m_hScreenBufferOne, false, &cfi))
 		return;
 	if (!SetCurrentConsoleFontEx(m_hScreenBufferTwo, false, &cfi))
 		return;
 
-	// Check if valid width and height
-	CONSOLE_SCREEN_BUFFER_INFO csbi;
-	if (!GetConsoleScreenBufferInfo(m_hScreenBufferOne, &csbi))
-		return;
-	if (height > csbi.dwMaximumWindowSize.Y)
-		return;
-	if (width > csbi.dwMaximumWindowSize.X)
-		return;
-
-	// Set the console width and height
-	SMALL_RECT rectWindow = { 0, 0, (short)width - 1, (short)height - 1 };
-	if (!SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow))
-		return;
-	if (!SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow))
-		return;
+	FixedConsoleWindow();
 }
 
 Console* Console::getConsole(unsigned int width, unsigned int height, unsigned int fontw, unsigned int fonth)
 {
-	static Console mInstance(width, height, fontw, fonth);
+	static Console mInstance(width, height,fontw,fonth);
 	return &mInstance;
 }
 
@@ -104,7 +87,6 @@ void Console::SetCursor(bool visible)
 	lpCursor.dwSize = 20;
 	SetConsoleCursorInfo(*m_hActiveScreenBuffer, &lpCursor);
 	SetConsoleCursorInfo(*m_hBackgroundScreenBuffer, &lpCursor);
-
 }
 
 void Console::FixedConsoleWindow() {

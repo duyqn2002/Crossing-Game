@@ -2,36 +2,26 @@
 #define CGAME_H
 
 #include "CCenterMenu.h"
+#include "CScoreBoard.h"
+#include "CAlienShip.h"
 #include "CPEOPLE.h"
 #include "CLANE.h"
 
 class CGAME {
 private:
-	Console* m_pConsole;
+	Console* mConsole;
+
+	// Game nenu
 	CCenterMenu mMainMenu;
 	CCenterMenu mSettingMenu;
 
-	bool isPlaying; 
-	bool isPause;
-	bool isPlayed;
+	// Score
+	CScoreBoard* mScoreBoard;
 
-	thread mRenderGame;
-
-	vector<pair<float, ENEMY>> mLanes = {
-		{0.0f,ENEMY::NO_ENEMY},
-		{-1.0f,ENEMY::CDOG},
-		{1.0f,ENEMY::CBIRD},
-		{-1.0f,ENEMY::CDOG},
-		{1.0f,ENEMY::CBIRD},
-		{1.0f,ENEMY::NO_ENEMY},
-		{-1.0f,ENEMY::CCAR},
-		{1.0f,ENEMY::CTRUCK},
-		{-1.0f,ENEMY::CCAR},
-		{1.0f,ENEMY::CTRUCK},
-		{-1.0f,ENEMY::CCAR},
-	};
-
+	// Enemies obj
 	vector<CLANE> mLaneOfEnemies;
+
+	CAlienShip mAlienShip;
 
 	// Player
 	CPEOPLE mPeople;
@@ -40,6 +30,33 @@ private:
 	CPOINT2D mTopLeft;
 	CPOINT2D mBottomRight;
 
+	// Render game thread
+	thread mRenderGame;
+
+	// Game state
+	bool isPlaying; // True when player is playing
+	bool isPause; // True when player pause game
+	bool isPlayed; // True when player make new game
+
+	int mLevel;
+	int mMaxEnemies;
+	int mMinEnemies;
+
+	// Default game setting 
+	vector<pair<float, ENEMY>> mLanes = {
+		{0.0f,ENEMY::NO_ENEMY},
+		{-1.0f,ENEMY::CDOG},
+		{1.0f,ENEMY::CBIRD},
+		{-1.0f,ENEMY::CDOG},
+		{1.0f,ENEMY::CBIRD},
+		{0.0f,ENEMY::NO_ENEMY},
+		{-1.0f,ENEMY::CCAR},
+		{1.0f,ENEMY::CTRUCK},
+		{-1.0f,ENEMY::CCAR},
+		{1.0f,ENEMY::CTRUCK},
+		{-1.0f,ENEMY::CCAR},
+		{0.0f,ENEMY::NO_ENEMY},
+	};
 private:	
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
 	CGAME(const CGAME&);
@@ -48,9 +65,11 @@ private:
 	// Post process
 	void setSettingMenu();
 	void setMainMenu();
+	void setPlayingArea(float = 1.0f, float = 1.0f);
+	void setScoreBoard();
 	void setObjects();
 	void setPeople();
-	void setPlayingArea(float = 1.0f, float = 1.0f);
+	void setAlienShip();
 
 	// Getter
 	CPEOPLE getPeople() const; // Lấy thông tin người
@@ -62,10 +81,12 @@ private:
 	void drawGame(); // Thực hiện vẽ trò chơi ra màn hình sau khi có dữ liệu
 
 	// Game flow
+	void renderWhenPlayerDie();
 	void renderGameThread(KEY*);
 	void resetGame(); // Thực hiện thiết lập lại toàn bộ dữ liệu như lúc đầu
+	void nextLevel();
 	void playGame(); // Trong qua trinh choi
-	void nextLevel() {};
+	
 
 	// Save and load game
 	void loadGame(); // Thực hiện tải lại trò chơi đã lưu
