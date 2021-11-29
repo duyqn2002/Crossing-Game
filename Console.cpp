@@ -80,6 +80,46 @@ unsigned int Console::Width() const {
 	return mWidth;
 }
 
+string Console::getFilePathToLoad() const
+{
+	char filePath[MAX_PATH];
+
+	OPENFILENAMEA ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFilter = LPCSTR("Text Files\0*.txt\0Any File\0*.*\0\0");
+	ofn.lpstrFile = filePath;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+
+	if (!GetOpenFileNameA(&ofn))
+		return "";
+
+	return string(filePath);
+}
+
+string Console::getFilePathToSave() const
+{
+	char filePath[MAX_PATH];
+
+	OPENFILENAMEA ofn;
+	ZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = NULL;
+	ofn.lpstrFilter = LPCSTR("Text Files\0*.txt\0Any File\0*.*\0\0");
+	ofn.lpstrFile = filePath;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = MAX_PATH;
+	ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+
+	if (!GetSaveFileNameA(&ofn))
+		return "";
+
+	return string(filePath);
+}
+
 void Console::SetCursor(bool visible)
 {
 	CONSOLE_CURSOR_INFO lpCursor;

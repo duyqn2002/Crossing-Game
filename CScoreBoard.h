@@ -18,8 +18,6 @@ private:
 		"\\__ \\/ _/ _ \\ '_/ -_)\n"
 		"|___/\\__\\___/_| \\___|\n";
                       
-	unsigned int mScore;
-
 	unsigned int mWidth;
 	unsigned int mHeight;
 
@@ -36,12 +34,8 @@ public:
 	void setPosTopLeftCorner(CPOINT2D);
 	void setPosBottomRightCorner(CPOINT2D);
 
-	// Getter
-	unsigned int getScore() const;
-
 	// Method
 	void resize(int , int);
-	void increaseScore(int);
 	void drawScoreBoard(CGAME*);
 };
 

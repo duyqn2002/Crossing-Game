@@ -18,8 +18,11 @@ CAlienShip::CAlienShip()
 	mHeight = mVehicleRightForm.Height();
 	mWidth = mVehicleRightForm.Width();
 
-	mCurrVehicleForm = &mVehicleLeftForm;
+	mCurrVehicleForm = &mVehicleRightForm;
 	mVehicleColour = TRUCK_COLOUR;
+	mIsReachPeople = false;
+	mIsCapture = false;
+	mPeople = nullptr;
 }
 
 CAlienShip::CAlienShip(const CAlienShip& other)
@@ -45,6 +48,9 @@ CAlienShip::CAlienShip(const CAlienShip& other)
 
 	// Color for vehicle
 	mVehicleColour = other.mVehicleColour;
+	mIsReachPeople = other.mIsReachPeople;
+	mIsCapture = other.mIsCapture;
+	mPeople = other.mPeople;
 }
 
 CVEHICLE* CAlienShip::Clone()
@@ -52,43 +58,40 @@ CVEHICLE* CAlienShip::Clone()
 	return new CAlienShip(*this);
 }
 
-void CAlienShip::setPeoplePos(int x, int y)
+void CAlienShip::setPeople(CPEOPLE* people)
 {
-	mPosXOfPeople = x;
-	mPosYOfPeople = y;
+	mPeople = people;
+}
+
+bool CAlienShip::isReachPeople() const {
+	return mIsReachPeople;
 }
 
 bool CAlienShip::isCapturePeople() const
 {
-	if(getX() != mPosXOfPeople || getY() != mPosYOfPeople) {
-		return false;
-	}
-	return true;
+	return mIsCapture;
 }
 
 void CAlienShip::updatePos()
 {
-	int x = getX();
-	int y = getY();
+	// Calc the angle base on two point
+	int desX = mPeople->getX() + (mPeople->Width() / 2);
+	int desY = mPeople->getY();
 
-	if (x > mPosXOfPeople) {
-		x--;
-	}
-	else {
-		if (x < mPosXOfPeople) {
-			x++;
-		}
-	}
+	int srcX = getX() + (mWidth / 2);
+	int srcY = getY() + mHeight;
 
-	if (y > mPosYOfPeople) {
-		y--;
-	}
-	else {
-		if (y < mPosYOfPeople) {
-			y++;
-		}
-	}
+	double angle = atan2(desY - srcY, desX - srcX);
 
-	mCurrPos.setXY(x, y);
+	double cosValue = cos(angle) * 2;
+	double sinValue = sin(angle) * 2;
+	
+	srcX += cosValue;
+	srcY += sinValue;
+
+	if (srcX == desX && srcY == desY)
+		mIsReachPeople = true;
+
+	mCurrPos.moveXY(cosValue, sinValue);
 }
 

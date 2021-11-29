@@ -26,6 +26,8 @@ public:
 
 	unsigned int Height() const;
 	unsigned int Width() const;
+	string getFilePathToLoad() const;
+	string getFilePathToSave() const;
 
 	void SetCursor(bool);
 	void FixedConsoleWindow();

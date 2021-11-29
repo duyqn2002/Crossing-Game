@@ -43,12 +43,6 @@ void CScoreBoard::resize(int width, int height)
 	mBottomRight.setXY(mTopLeft.getX() + width - 1, mTopLeft.getY() + height - 1);
 }
 
-void CScoreBoard::increaseScore(int delta) {
-	if (delta <= 0)
-		return;
-	mScore += delta;
-}
-
 void CScoreBoard::drawScoreBoard(CGAME* game)
 {
 	// Init part
@@ -62,7 +56,7 @@ void CScoreBoard::drawScoreBoard(CGAME* game)
 	int y = titleY + mTitle.Height() + 1;
 
 	vector<Texture> vecTexts;
-	vecTexts.push_back("Score: " + to_string(game->getHighScore()));
+	vecTexts.push_back("High Score: " + to_string(game->getHighScore()));
 	vecTexts.push_back("Score: " + to_string(game->getScore()));
 	vecTexts.push_back("Level: " + to_string(game->getLevel()));
 

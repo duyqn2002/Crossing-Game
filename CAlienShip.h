@@ -7,14 +7,16 @@
 class CAlienShip : public CVEHICLE
 {
 private:
-	int mPosXOfPeople;
-	int mPosYOfPeople;
+	CPEOPLE* mPeople;
+	bool mIsReachPeople;
+	bool mIsCapture;
 public:
 	CAlienShip();
 	CAlienShip(const CAlienShip&);
 	virtual CVEHICLE* Clone();
 
-	void setPeoplePos(int, int);
+	void setPeople(CPEOPLE*);
+	bool isReachPeople() const;
 	bool isCapturePeople() const;
 	void updatePos();
 };

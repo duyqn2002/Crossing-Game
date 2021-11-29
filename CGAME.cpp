@@ -17,6 +17,7 @@ CGAME::CGAME()  {
 	setScoreBoard();
 	setObjects();
 	setPeople();
+	setAlienShip();
 }
 
 CGAME* CGAME::getGame() {
@@ -126,8 +127,8 @@ void CGAME::setAlienShip()
 {
 	int alienPosX = RandomInt(mBottomRight.getX(), mTopLeft.getY() + 1);
 	int alienPosY = RandomInt(mTopLeft.getY(), mTopLeft.getY() - 10);
-
 	mAlienShip.setXY(alienPosX, alienPosY);
+	mAlienShip.setPeople(&mPeople);
 }
 
 CPEOPLE CGAME::getPeople() const {
@@ -157,7 +158,6 @@ unsigned int CGAME::getHighScore() const {
 	return mHightScore;
 
 }
-
 
 string CGAME::getHelp() const
 {
@@ -201,15 +201,25 @@ void CGAME::drawGame() {
 }
 
 void CGAME::renderWhenPlayerDie() {
-	while (!mAlienShip.isCapturePeople()) {
+	while (true) {
 		mConsole->ClearScreen();
 
-		drawGame();
-		mAlienShip.drawToConsole(*mConsole, mTopLeft.getX(), mBottomRight.getY());
-		mAlienShip.updatePos();
-		
-		mConsole->Render();
+		if (!mAlienShip.isReachPeople()) {
+			mAlienShip.updatePos();
+		}
 
+		// Draw border
+		drawPlayingArea();
+		mScoreBoard->drawScoreBoard(this);
+		// Draw people
+		mPeople.drawPeople(*mConsole);
+		mAlienShip.drawToConsole(*mConsole, mTopLeft.getX(), mBottomRight.getX());
+		
+		if (!mAlienShip.isReachPeople()) {
+		
+		}
+
+		mConsole->Render();
 		Sleep(30);
 	}
 }
@@ -227,13 +237,11 @@ void CGAME::renderGameThread(KEY* MOVING) {
 			updatePosEnemies();
 
 			if (mPeople.isImpact(getEnemyLane())) {
-			/*	mAlienShip.setPeoplePos(getPeople().getX(), getPeople().getY());
 
 				thread t = thread(&CGAME::renderWhenPlayerDie, this);
 				t.join();
 
-				mPeople.Dead();*/
-				mScore = 0;
+				mPeople.Dead();
 			}
 		}
 		*MOVING = KEY::SPACE;
@@ -253,6 +261,12 @@ void CGAME::renderGameThread(KEY* MOVING) {
 void CGAME::resetGame() {
 	mLaneOfEnemies.clear();
 
+	mLevel = 1;
+	mMinEnemies = 1;
+	mMaxEnemies = mMinEnemies;
+
+	mScore = 0;
+	
 	setObjects();
 	setPeople();
 	setAlienShip();
@@ -334,8 +348,15 @@ void CGAME::StartGame() {
 	}
 }
 
+void CGAME::loadGame() {
+	string filePath = mConsole->getFilePathToLoad();
+	ifstream ifs(filePath.c_str());
+	if (!ifs)
+		return;
+	
+	// Load file save here
 
-void CGAME::loadGame() {}
+}
 
 void CGAME::saveGame() {}
 

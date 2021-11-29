@@ -265,7 +265,7 @@ void CLANE::drawTrafficLight(Console& console)
 void CLANE::drawObjectsOnLane(Console& console)
 {
 	for (auto& item : mObjects) {
-		item->drawToConsole(console,mLeftLimit,mRightLimit );
+		item->drawToConsole(console,mLeftLimit,mRightLimit);
 	}
 
 	if (mEnabledTrafficLight) {
