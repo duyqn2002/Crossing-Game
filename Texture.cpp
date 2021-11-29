@@ -28,6 +28,8 @@ Texture::Texture(const char* body) {
 	mWidth = findWidth(mBody);
 }
 
+Texture::Texture(const std::string& body) : Texture(body.c_str()) {}
+
 Texture::Texture(const Texture& other) {
 	for (std::string line : other.mBody) {
 		mBody.push_back(line);
@@ -38,6 +40,10 @@ Texture::Texture(const Texture& other) {
 }
 
 Texture& Texture::operator= (const char* body) {
+	if (mBody.size() != 0) {
+		mBody.clear();
+	}
+
 	std::stringstream sstream(body);
 	std::string temp;
 
@@ -52,7 +58,7 @@ Texture& Texture::operator= (const char* body) {
 	return *this;
 }
 
-Texture& Texture::operator=(std::string& body)
+Texture& Texture::operator=(const std::string& body)
 {
 	operator=(body.c_str());
 	return *this;
@@ -93,9 +99,6 @@ void Texture::LoadFromFile(const std::string& filePath) {
 }
 
 void Texture::AddLine(const std::string& part) {
-	if (mWidth != part.size())
-		return;
-
 	// Update attributes
 	mBody.push_back(part);
 

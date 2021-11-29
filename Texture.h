@@ -14,14 +14,15 @@ private:
 
 public:
 	Texture() = default;
-	Texture(const char* body);
+	Texture(const char*);
+	Texture(const std::string&);
 	Texture(const Texture&);
 
 	~Texture() = default;
 
 	// Operator
 	Texture& operator= (const char*);
-	Texture& operator= (std::string&);
+	Texture& operator= (const std::string&);
 
 	bool operator==(const Texture&) const;
 	bool operator!=(const Texture&) const;

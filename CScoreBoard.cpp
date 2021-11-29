@@ -1,3 +1,4 @@
+#include "CGAME.h"
 #include "CScoreBoard.h"
 
 CScoreBoard::CScoreBoard()
@@ -42,17 +43,41 @@ void CScoreBoard::resize(int width, int height)
 	mBottomRight.setXY(mTopLeft.getX() + width - 1, mTopLeft.getY() + height - 1);
 }
 
-void CScoreBoard::drawScoreBoard(Console& console)
+void CScoreBoard::increaseScore(int delta) {
+	if (delta <= 0)
+		return;
+	mScore += delta;
+}
+
+void CScoreBoard::drawScoreBoard(CGAME* game)
 {
+	// Init part
+	Console* console = game->getConsole();
 	int centerX = mTopLeft.getX() + mWidth / 2;
 
 	int titleX = centerX - (mTitle.Width() / 2);
 	int titleY = mTopLeft.getY() + mPaddingTop;
 
-	string score = "Score: " + to_string(mScore);
-	Texture textDisplay;
-	textDisplay = score;
+	int x;
+	int y = titleY + mTitle.Height() + 1;
 
-	console.DrawBorder(mTopLeft, mBottomRight, COLOUR::CYAN_BG);
-	console.DrawObject(titleX, titleY, mTitle);
+	vector<Texture> vecTexts;
+	vecTexts.push_back("Score: " + to_string(game->getHighScore()));
+	vecTexts.push_back("Score: " + to_string(game->getScore()));
+	vecTexts.push_back("Level: " + to_string(game->getLevel()));
+
+	Texture help = "Help\n" + game->getHelp();
+
+	// Render part
+	console->DrawBorder(mTopLeft, mBottomRight, COLOUR::CYAN_BG);
+	console->DrawObject(titleX, titleY, mTitle);
+
+	for (const auto& text : vecTexts) {
+		x = centerX - (text.Width() / 2);
+
+		console->DrawObject(x, y++, text);
+	}
+
+	x = centerX - (help.Width() / 2);
+	console->DrawObject(x, y + mPaddingTop, help);
 }

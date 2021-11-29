@@ -3,6 +3,8 @@
 
 #include "Console.h"
 
+class CGAME;
+
 class CScoreBoard
 {
 private:
@@ -40,7 +42,7 @@ public:
 	// Method
 	void resize(int , int);
 	void increaseScore(int);
-	void drawScoreBoard(Console&);
+	void drawScoreBoard(CGAME*);
 };
 
 #endif // !CSCORE_BOARD_H

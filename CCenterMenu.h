@@ -9,7 +9,8 @@ class CCenterMenu
 	bool mQuit;
 
 	Texture mMenuTitle;
-	Texture mSelectorSymbol;
+	Texture mSelectorLeftSymbol;
+	Texture mSelectorRightSymbol;
 	vector<Texture> mOptions;
 	vector<function <void()>> mOptionsFunc;
 
@@ -27,7 +28,7 @@ public:
 	CCenterMenu(Console*);
 	~CCenterMenu() = default;
 
-	void setSelectorSymbol(Texture);
+	void setSelectorSymbol(Texture = "->", Texture = "<-");
 	void setMenuTitle(Texture,COLOUR = COLOUR::CYAN);
 	void setMarginTop(int);
 	void setMenuColor(COLOUR);

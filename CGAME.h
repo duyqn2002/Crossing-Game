@@ -42,6 +42,9 @@ private:
 	int mMaxEnemies;
 	int mMinEnemies;
 
+	unsigned int mScore;
+	unsigned int mHightScore;
+
 	// Default game setting 
 	vector<pair<float, ENEMY>> mLanes = {
 		{0.0f,ENEMY::NO_ENEMY},
@@ -61,19 +64,6 @@ private:
 	CGAME(); // Chuẩn bị dữ liệu cho tất cả các đối tượng
 	CGAME(const CGAME&);
 	CGAME& operator=(const CGAME&);
-
-	// Post process
-	void setSettingMenu();
-	void setMainMenu();
-	void setPlayingArea(float = 1.0f, float = 1.0f);
-	void setScoreBoard();
-	void setObjects();
-	void setPeople();
-	void setAlienShip();
-
-	// Getter
-	CPEOPLE getPeople() const; // Lấy thông tin người
-	CLANE getEnemyLane(); // Lấy danh sách các đồ vật trên 1 lane
 
 	// Draw part
 	void drawPlayingArea(); // Vẽ khu vực chơi
@@ -103,6 +93,25 @@ private:
 public:
 	static CGAME* getGame();
 	~CGAME(); // Hủy tài nguyên đã cấp phát
+
+	// Post process
+	void setSettingMenu();
+	void setMainMenu();
+	void setPlayingArea(float = 1.0f, float = 1.0f);
+	void setScoreBoard();
+	void setObjects();
+	void setPeople();
+	void setAlienShip();
+
+	// Getter
+	unsigned int getLevel() const;
+	unsigned int getScore() const;
+	unsigned int getHighScore() const;
+	string getHelp() const;
+	Console* getConsole();
+	CPEOPLE getPeople() const; // Lấy thông tin người
+	CLANE getEnemyLane(); // Lấy danh sách các đồ vật trên 1 lane
+
 	void Run();
 };
 

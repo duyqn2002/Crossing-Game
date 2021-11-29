@@ -143,6 +143,41 @@ CLANE CGAME::getEnemyLane()
 	return CLANE();
 }
 
+unsigned int CGAME::getLevel() const
+{
+	return mLevel;
+}
+
+unsigned int CGAME::getScore() const
+{
+	return mScore;
+}
+
+unsigned int CGAME::getHighScore() const {
+	return mHightScore;
+
+}
+
+
+string CGAME::getHelp() const
+{
+	string helpText = \
+		"**********************************\n"
+		"* Press W,S,D,A to move player   *\n"
+		"* Press L to load game           *\n"
+		"* Press T to save game           *\n"
+		"* Press P to pause game          *\n"
+		"* Press ESC to go back main menu *\n"
+		"**********************************\n";
+
+	return helpText;
+}
+
+Console* CGAME::getConsole()
+{
+	return mConsole;
+}
+
 void CGAME::drawPlayingArea() {
 	// Draw the border line
 	mConsole->DrawBorder(mTopLeft, mBottomRight, PLAYING_AREA_COLOUR);
@@ -157,7 +192,7 @@ void  CGAME::drawEnemies() {
 void CGAME::drawGame() {
 	// Draw border
 	drawPlayingArea();
-	mScoreBoard->drawScoreBoard(*mConsole);
+	mScoreBoard->drawScoreBoard(this);
 	// Draw people
 	mPeople.drawPeople(*mConsole);
 
@@ -198,6 +233,7 @@ void CGAME::renderGameThread(KEY* MOVING) {
 				t.join();
 
 				mPeople.Dead();*/
+				mScore = 0;
 			}
 		}
 		*MOVING = KEY::SPACE;
@@ -234,7 +270,11 @@ void CGAME::nextLevel() {
 		mMaxEnemies = mMinEnemies + 1;
 	}
 	
-	resetGame();
+	mLaneOfEnemies.clear();
+	setObjects();
+	setPeople();
+	mScore += 100;
+	mHightScore = mScore;
 }
 
 void CGAME::playGame() {

@@ -14,7 +14,7 @@ CCenterMenu::CCenterMenu()
 	mQuit = false;
 
 	mMenuTitle = "";
-	setSelectorSymbol("->");
+	setSelectorSymbol("->","<-");
 
 	mHeight = 0;
 	mWidth = 0;
@@ -27,8 +27,9 @@ CCenterMenu::CCenterMenu()
 	setHoverOptionColor(COLOUR::CYAN);
 }
 
-void CCenterMenu::setSelectorSymbol(Texture symbol) {
-	mSelectorSymbol = symbol;
+void CCenterMenu::setSelectorSymbol(Texture leftSymbol,Texture rightSymbol) {
+	mSelectorLeftSymbol = leftSymbol;
+	mSelectorRightSymbol = rightSymbol;
 }
 
 void CCenterMenu::setMenuTitle(Texture menuTitle,COLOUR color)
@@ -157,7 +158,9 @@ void CCenterMenu::drawMenu(Console& console)
 		COLOUR textColor = mMenuColor;
 		if (index == mCurrChoice) {
 			textColor = mMenuHoverOptionColor;
-			console.DrawObject(x - mSelectorSymbol.Width() - 1, y, mSelectorSymbol, textColor);
+			console.DrawObject(x - mSelectorLeftSymbol.Width() - 1, y, mSelectorLeftSymbol, textColor);
+			console.DrawObject(x + mOptions[index].Width() + 1, y, mSelectorRightSymbol, textColor);
+
 		}
 		console.DrawObject(x, y, mOptions[index], textColor);
 		y+=mOptions[index].Height();
