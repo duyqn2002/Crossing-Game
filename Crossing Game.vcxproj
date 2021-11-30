@@ -155,6 +155,7 @@
     <ClCompile Include="CTRUCK.cpp" />
     <ClCompile Include="CVEHICLE.cpp" />
     <ClCompile Include="HelpFunctions.cpp" />
+    <ClCompile Include="ITrafficLightState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TrafficLightGreen.cpp" />

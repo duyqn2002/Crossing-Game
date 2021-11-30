@@ -75,6 +75,9 @@
     <ClCompile Include="CAlienShip.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ITrafficLightState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="HelpFunctions.h">

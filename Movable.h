@@ -23,6 +23,10 @@ public:
 	virtual void toggleForm(int) = 0;
 	virtual void Move(int, int) = 0;
 
+	// Save load 
+	virtual void storeData(ofstream&) = 0;
+	virtual void loadData(ifstream&) = 0;
+
 	// Render method
 	virtual void drawToConsole(Console&, int, int) = 0;
 };

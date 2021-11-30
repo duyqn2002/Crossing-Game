@@ -48,6 +48,25 @@ void CANIMAL::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
+void CANIMAL::storeData(ofstream& ofs)
+{
+	ofs.write(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	if (mCurrAnimalForm == &mAnimalLeftForm)
+		state = true;
+	ofs.write(reinterpret_cast<char*> (&state), sizeof(bool));
+}
+
+void CANIMAL::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	ifs.read(reinterpret_cast<char*> (&state), sizeof(bool));
+	mCurrAnimalForm = (state) ? &mAnimalLeftForm : &mAnimalRightForm;
+}
+
 void CANIMAL::drawToConsole(Console& console,int leftLimit, int rightLimit) {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();

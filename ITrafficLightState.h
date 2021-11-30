@@ -14,7 +14,12 @@ protected:
 	int mInterval;
 
 public:
-	virtual void setStartTime(clock_t) = 0;
+	void setInterval(int);
+	void setStartTime(clock_t);
+
+	int getInterval() const;
+
+	// Method
 	virtual void Timer() = 0;
 	virtual bool isStop() = 0;
 	virtual void drawTrafficLight(int,int,int,Console&) = 0;

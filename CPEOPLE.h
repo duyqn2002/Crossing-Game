@@ -42,6 +42,7 @@ public:
 	int getY() const;
 	int Height() const;
 	int Width() const;
+	CPOINT2D getPos() const;
 
 	// Moving function
 	void Up(int);
@@ -49,13 +50,14 @@ public:
 	void Right(int);
 	void Down(int);
 
+	void Clip(); // Don't let the people go outside the playing area
 	void Move(KEY, int);
 
 	// Check impact
 	bool isImpact(const CLANE&);
 
-	// Don't let the people go outside the playing area
-	void Clip();
+	void storeData(ofstream&);
+	void loadData(ifstream&);
 
 	// Handle the event
 	bool isFinish() const;

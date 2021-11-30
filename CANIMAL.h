@@ -20,7 +20,6 @@ protected:
 	Texture* mCurrAnimalForm;
 
 	COLOUR mAnimalColour;
-
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
@@ -42,6 +41,10 @@ public:
 	// Update method
 	void toggleForm(int);
 	void Move(int, int);
+
+	// Save load 
+	void storeData(ofstream&);
+	void loadData(ifstream&);
 
 	// Sound
 	virtual void Tell() {};

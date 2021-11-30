@@ -38,3 +38,8 @@ int CPOINT2D::getX() const {
 int CPOINT2D::getY() const {
 	return mY;
 }
+
+double CPOINT2D::Distance(const CPOINT2D& other) const
+{
+	return sqrt(pow(other.getX() - getX(),2) + pow(other.getY() - getY() , 2));
+}

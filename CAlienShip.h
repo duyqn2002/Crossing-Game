@@ -8,6 +8,7 @@ class CAlienShip : public CVEHICLE
 {
 private:
 	CPEOPLE* mPeople;
+	unsigned int mSpeed;
 	bool mIsReachPeople;
 	bool mIsCapture;
 public:

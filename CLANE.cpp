@@ -191,6 +191,66 @@ void CLANE::disableTrafficLight()
 	mCurrLightState = nullptr;
 }
 
+void CLANE::storeData(ofstream& ofs) 
+{
+	ofs.write(reinterpret_cast<char*> (&mEnabledTrafficLight), sizeof(bool));
+
+	if (mEnabledTrafficLight) {
+		int interval = mGreenLight->getInterval();
+		ofs.write(reinterpret_cast<char*> (&interval), sizeof(interval));
+
+		interval = mRedLight->getInterval();
+		ofs.write(reinterpret_cast<char*> (&interval), sizeof(interval));
+		
+		bool trafficLightState = false;
+		if (mCurrLightState == mGreenLight)
+			trafficLightState = true;
+		ofs.write(reinterpret_cast<char*> (&trafficLightState), sizeof(bool));
+	}
+
+	unsigned int size = mObjects.size();
+	ofs.write(reinterpret_cast<char*> (&size), sizeof(unsigned int));
+
+	for (auto& Obj : mObjects) {
+		Obj->storeData(ofs);
+	}
+}
+
+void CLANE::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*> (&mEnabledTrafficLight), sizeof(bool));
+
+	if (mEnabledTrafficLight) {
+		int interval;
+		ifs.read(reinterpret_cast<char*> (&interval), sizeof(int));
+		mGreenLight->setInterval(interval);
+
+		ifs.read(reinterpret_cast<char*> (&interval), sizeof(int));
+		mRedLight->setInterval(interval);
+
+		bool trafficLightState = false;
+		ifs.read(reinterpret_cast<char*> (&trafficLightState), sizeof(bool));
+		mCurrLightState = (trafficLightState) ? mGreenLight : mRedLight;
+	}
+
+	unsigned int size;
+	ifs.read(reinterpret_cast<char*> (&size), sizeof(unsigned int));
+
+	Movable* temp = mObjects[0]->Clone();
+	for (auto& object : mObjects) {
+		delete object;
+		object = nullptr;
+	}
+	mObjects.resize(size);
+
+	for (auto& Obj : mObjects) {
+		Obj = temp->Clone();
+		Obj->loadData(ifs);
+	}
+
+	delete temp;
+}
+
 void CLANE::updateObjectsOnLane()
 {
 	if (mEnabledTrafficLight) {

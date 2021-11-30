@@ -51,6 +51,8 @@ public:
 	void enableTrafficLight();
 	void disableTrafficLight();
 
+	void storeData(ofstream&) ;
+	void loadData(ifstream&);
 	void generateObjectsOnLane(const ENEMY&, int);
 	void updateObjectsOnLane();
 	void drawTrafficLight(Console&);

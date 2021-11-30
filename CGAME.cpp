@@ -10,6 +10,8 @@ CGAME::CGAME()  {
 	mMinEnemies = 1;
 	mMaxEnemies = mMinEnemies;
 
+	mScore = 0;
+	mHightScore = 0;
 	// Set obj
 	setMainMenu();
 	setSettingMenu();
@@ -162,13 +164,11 @@ unsigned int CGAME::getHighScore() const {
 string CGAME::getHelp() const
 {
 	string helpText = \
-		"**********************************\n"
-		"* Press W,S,D,A to move player   *\n"
-		"* Press L to load game           *\n"
-		"* Press T to save game           *\n"
-		"* Press P to pause game          *\n"
-		"* Press ESC to go back main menu *\n"
-		"**********************************\n";
+		"Press W,S,D,A to move player\n"
+		"Press L to load game\n"
+		"Press T to save game\n"
+		"Press P to pause game\n"
+		"Press ESC to go back main menu\n";
 
 	return helpText;
 }
@@ -226,31 +226,27 @@ void CGAME::renderWhenPlayerDie() {
 
 void CGAME::renderGameThread(KEY* MOVING) {
 	while (isPlaying) {
-		if (isPause)
-			continue;
-
 		// Clear the old screen
 		mConsole->ClearScreen();
 
-		if (!mPeople.isDead()) {
-			updatePosPeople(*MOVING);
-			updatePosEnemies();
+		if (!isPause) {
+			if (!mPeople.isDead()) {
+				updatePosPeople(*MOVING);
+				updatePosEnemies();
 
-			if (mPeople.isImpact(getEnemyLane())) {
+				if (mPeople.isImpact(getEnemyLane())) {
+					mPeople.Dead();
+					thread t = thread(&CGAME::renderWhenPlayerDie, this);
+					t.join();
+				}
 
-				thread t = thread(&CGAME::renderWhenPlayerDie, this);
-				t.join();
-
-				mPeople.Dead();
+				if (mPeople.isFinish()) {
+					nextLevel();
+				}
 			}
 		}
 		*MOVING = KEY::SPACE;
-
 		drawGame();
-
-		if (mPeople.isFinish()) {
-			nextLevel();
-		}
 
 		// Render out console
 		mConsole->Render();
@@ -304,16 +300,28 @@ void CGAME::playGame() {
 	while (isPlaying) {
 		temp = (KEY)toupper(_getch());
 		if (!getPeople().isDead()) {
-			if (temp == KEY::ESC) {
+			switch (temp)
+			{
+			case KEY::SAVE_GAME:
+				pauseGame();
+				saveGame();
+				resumeGame();
+				break;
+			case KEY::LOAD_GAME:
+				pauseGame();
+				loadGame();
+				resumeGame();
+				break;
+			case KEY::PAUSE_GAME:
+				pauseGame();
+				break;
+			case KEY::ESC:
 				exitGame();
 				return;
-			}
-			else if (temp == KEY::PAUSE_GAME) {
-				pauseGame();
-			}
-			else {
+			default:
 				resumeGame();
 				MOVING = (KEY)temp;
+				break;
 			}
 		}
 		else {
@@ -350,15 +358,57 @@ void CGAME::StartGame() {
 
 void CGAME::loadGame() {
 	string filePath = mConsole->getFilePathToLoad();
-	ifstream ifs(filePath.c_str());
+	ifstream ifs(filePath.c_str(), ios::binary | ios::out);
 	if (!ifs)
 		return;
 	
 	// Load file save here
+	ifs.read(reinterpret_cast<char*> (&isPlaying), sizeof(bool));
+	ifs.read(reinterpret_cast<char*> (&isPause), sizeof(bool));
+	ifs.read(reinterpret_cast<char*> (&isPlayed), sizeof(bool));
 
+	if (isPlayed) {
+		if (mMainMenu.isHasOption("Continue") == false)
+			mMainMenu.insertOption(1, "Continue", bind(&CGAME::playGame, this));
+	}
+
+	ifs.read(reinterpret_cast<char*> (&mScore), sizeof(unsigned int));
+	ifs.read(reinterpret_cast<char*> (&mHightScore), sizeof(unsigned int));
+	ifs.read(reinterpret_cast<char*> (&mLevel), sizeof(short));
+	ifs.read(reinterpret_cast<char*> (&mMaxEnemies), sizeof(short));
+	ifs.read(reinterpret_cast<char*> (&mMinEnemies), sizeof(short));
+
+	mPeople.loadData(ifs);
+
+	for (auto& Lane : mLaneOfEnemies) {
+		Lane.loadData(ifs);
+	}
 }
 
-void CGAME::saveGame() {}
+void CGAME::saveGame() {
+	string filePath = mConsole->getFilePathToSave();
+	ofstream ofs(filePath.c_str(),ios::binary | ios::out);
+	if (!ofs)
+		return;
+
+	// Save game here
+	ofs.write(reinterpret_cast<char*> (&isPlaying), sizeof(bool));
+	ofs.write(reinterpret_cast<char*> (&isPause), sizeof(bool));
+	ofs.write(reinterpret_cast<char*> (&isPlayed), sizeof(bool));
+
+	ofs.write(reinterpret_cast<char*> (&mScore), sizeof(unsigned int));
+	ofs.write(reinterpret_cast<char*> (&mHightScore), sizeof(unsigned int));
+	ofs.write(reinterpret_cast<char*> (&mLevel), sizeof(short));
+	ofs.write(reinterpret_cast<char*> (&mMaxEnemies), sizeof(short));
+	ofs.write(reinterpret_cast<char*> (&mMinEnemies), sizeof(short));
+
+
+	mPeople.storeData(ofs);
+
+	for (auto& Lane : mLaneOfEnemies) {
+		Lane.storeData(ofs);
+	}
+}
 
 void CGAME::pauseGame() {
 	isPause = true;

@@ -20,6 +20,8 @@ CAlienShip::CAlienShip()
 
 	mCurrVehicleForm = &mVehicleRightForm;
 	mVehicleColour = TRUCK_COLOUR;
+
+	mSpeed = 3;
 	mIsReachPeople = false;
 	mIsCapture = false;
 	mPeople = nullptr;
@@ -74,24 +76,26 @@ bool CAlienShip::isCapturePeople() const
 
 void CAlienShip::updatePos()
 {
-	// Calc the angle base on two point
 	int desX = mPeople->getX() + (mPeople->Width() / 2);
 	int desY = mPeople->getY();
 
 	int srcX = getX() + (mWidth / 2);
 	int srcY = getY() + mHeight;
 
+	// Calc the angle base on two point
 	double angle = atan2(desY - srcY, desX - srcX);
 
-	double cosValue = cos(angle) * 2;
-	double sinValue = sin(angle) * 2;
+	double cosValue = cos(angle) * mSpeed;
+	double sinValue = sin(angle) * mSpeed;
 	
 	srcX += cosValue;
 	srcY += sinValue;
-
-	if (srcX == desX && srcY == desY)
-		mIsReachPeople = true;
-
 	mCurrPos.moveXY(cosValue, sinValue);
+
+	CPOINT2D srcPoint(srcX, srcY);
+	if (srcPoint.Distance(mPeople->getPos()) <= mSpeed) {
+		setXY(desX - (mWidth / 2), desY - mHeight);
+		mIsReachPeople = true;
+	}
 }
 

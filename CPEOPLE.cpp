@@ -106,6 +106,27 @@ int CPEOPLE::Width() const {
 	return mWidth;
 }
 
+CPOINT2D CPEOPLE::getPos() const
+{
+	return mCurrPos;
+}
+
+void CPEOPLE::Up(int delta) {
+	mCurrPos.moveY(-delta);
+}
+
+void CPEOPLE::Left(int delta) {
+	mCurrPos.moveX(-delta);
+}
+
+void CPEOPLE::Right(int delta) {
+	mCurrPos.moveX(delta);
+}
+
+void CPEOPLE::Down(int delta) {
+	mCurrPos.moveY(delta);
+}
+
 void CPEOPLE::Clip() {
 	int currX = mCurrPos.getX();
 	int currY = mCurrPos.getY();
@@ -128,22 +149,6 @@ void CPEOPLE::Clip() {
 		currY = minY;
 
 	mCurrPos.setXY(currX, currY);
-}
-
-void CPEOPLE::Up(int delta) {
-	mCurrPos.moveY(-delta);
-}
-
-void CPEOPLE::Left(int delta) {
-	mCurrPos.moveX(-delta);
-}
-
-void CPEOPLE::Right(int delta) {
-	mCurrPos.moveX(delta);
-}
-
-void CPEOPLE::Down(int delta) {
-	mCurrPos.moveY(delta);
 }
 
 void CPEOPLE::Move(KEY direction, int delta) {
@@ -189,6 +194,27 @@ bool CPEOPLE::isImpact(const CLANE& Lane) {
 	if (isImpact)
 		mState = false;
 	return isImpact;
+}
+
+void CPEOPLE::storeData(ofstream& ofs)
+{
+	ofs.write(reinterpret_cast<char*>(&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	if (mCurrForm == &mPeopleLeftForm) {
+		state = true;
+	}
+	ofs.write(reinterpret_cast<char*>(&state), sizeof(bool));
+}
+
+void CPEOPLE::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&mCurrPos), sizeof(CPOINT2D));
+
+	bool state;
+	ifs.read(reinterpret_cast<char*>(&state), sizeof(bool));
+
+	mCurrForm = (state) ? &mPeopleLeftForm : &mPeopleRightForm;
 }
 
 bool  CPEOPLE::isFinish() const {

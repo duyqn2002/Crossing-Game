@@ -48,6 +48,25 @@ void CVEHICLE::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
+void CVEHICLE::storeData(ofstream& ofs)
+{
+	ofs.write(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	if (mCurrVehicleForm == &mVehicleLeftForm)
+		state = true;
+	ofs.write(reinterpret_cast<char*> (&state), sizeof(bool));
+}
+
+void CVEHICLE::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	ifs.read(reinterpret_cast<char*> (&state), sizeof(bool));
+	mCurrVehicleForm = (state) ? &mVehicleLeftForm : &mVehicleRightForm;
+}
+
 void CVEHICLE::drawToConsole(Console& console ,int leftLimit, int rightLimit ) {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();

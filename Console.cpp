@@ -17,20 +17,18 @@ Console::Console(unsigned int width, unsigned int height, unsigned int fontw, un
 	mHeight = height;
 	mWidth = width;
 
-	// Set the console width and height
-	SMALL_RECT rectWindow = { 0, 0, (short)mWidth - 1, (short)mHeight - 1 };
-	if (!SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow))
-		return;
-	if (!SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow))
-		return;
-
-	SetConsoleActiveScreenBuffer(*m_hActiveScreenBuffer);
-
 	// Set the screen buffer size
-	COORD coord = { (short)mWidth, (short)mHeight};
+	COORD coord = { (short)mWidth, (short)mHeight };
 	if (!SetConsoleScreenBufferSize(m_hScreenBufferOne, coord))
 		return;
 	if (!SetConsoleScreenBufferSize(m_hScreenBufferTwo, coord))
+		return;
+
+	// Set the console width and height
+	SMALL_RECT rectWindow = { 0, 0, (short)mWidth - 1, (short)mHeight - 1};
+	if (!SetConsoleWindowInfo(m_hScreenBufferOne, TRUE, &rectWindow))
+		return;
+	if (!SetConsoleWindowInfo(m_hScreenBufferTwo, TRUE, &rectWindow))
 		return;
 
 	// Set the font width and font height of console
@@ -88,16 +86,22 @@ string Console::getFilePathToLoad() const
 	ZeroMemory(&ofn, sizeof(ofn));
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = NULL;
-	ofn.lpstrFilter = LPCSTR("Text Files\0*.txt\0Any File\0*.*\0\0");
+	ofn.lpstrFilter = "Binary Files (*.bin)\0*.bin\0All Files (*.*)\0*.*\0\0";
 	ofn.lpstrFile = filePath;
 	ofn.lpstrFile[0] = '\0';
 	ofn.nMaxFile = MAX_PATH;
 	ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+	ofn.lpstrDefExt = "bin";
 
 	if (!GetOpenFileNameA(&ofn))
 		return "";
 
-	return string(filePath);
+	string result = filePath;
+	if (ofn.nFileExtension == 0) {
+		result += "." + string(ofn.lpstrDefExt);
+	}
+
+	return result;
 }
 
 string Console::getFilePathToSave() const
@@ -108,16 +112,22 @@ string Console::getFilePathToSave() const
 	ZeroMemory(&ofn, sizeof(ofn));
 	ofn.lStructSize = sizeof(OPENFILENAME);
 	ofn.hwndOwner = NULL;
-	ofn.lpstrFilter = LPCSTR("Text Files\0*.txt\0Any File\0*.*\0\0");
+	ofn.lpstrFilter = "Binary Files (*.bin)\0*.bin\0All Files (*.*)\0*.*\0\0";
 	ofn.lpstrFile = filePath;
 	ofn.lpstrFile[0] = '\0';
 	ofn.nMaxFile = MAX_PATH;
-	ofn.Flags = OFN_DONTADDTORECENT | OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_EXPLORER;
+	ofn.Flags = OFN_EXPLORER | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT;
+	ofn.lpstrDefExt = "bin";
 
 	if (!GetSaveFileNameA(&ofn))
 		return "";
 
-	return string(filePath);
+	string result = filePath;
+	if (ofn.nFileExtension == 0) {
+		result += "." + string(ofn.lpstrDefExt);
+	}
+
+	return result;
 }
 
 void Console::SetCursor(bool visible)
@@ -193,7 +203,6 @@ void Console::ClearScreen() {
 	GetConsoleScreenBufferInfo(*m_hBackgroundScreenBuffer, &bufferWindowInfo);
 	FillConsoleOutputCharacterA(*m_hBackgroundScreenBuffer, ' ', bufferWindowInfo.dwSize.X * bufferWindowInfo.dwSize.Y, topLeft, &written);
 	FillConsoleOutputAttribute(*m_hBackgroundScreenBuffer, 0, bufferWindowInfo.dwSize.X * bufferWindowInfo.dwSize.Y, topLeft, &written);
-	SetConsoleCursorPosition(*m_hBackgroundScreenBuffer, topLeft);
 }
 
 void Console::Render() {

@@ -8,10 +8,6 @@ TrafficLightRedState::TrafficLightRedState(CLANE* Lane, int interval) {
 	mInterval = interval;
 }
 
-void TrafficLightRedState::setStartTime(clock_t startTime) {
-	mStartTime = startTime;
-}
-
 void TrafficLightRedState::Timer()
 {
 	mEndTime = clock();

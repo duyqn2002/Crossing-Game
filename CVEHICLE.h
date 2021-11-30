@@ -41,6 +41,10 @@ public:
 	void toggleForm(int);
 	void Move(int, int);
 
+	// Save load 
+	void storeData(ofstream&);
+	void loadData(ifstream&);
+
 	// Render method
 	virtual void drawToConsole(Console&, int, int);
 };

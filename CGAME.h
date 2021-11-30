@@ -36,11 +36,11 @@ private:
 	// Game state
 	bool isPlaying; // True when player is playing
 	bool isPause; // True when player pause game
-	bool isPlayed; // True when player make new game
+	bool isPlayed; // True when player played game
 
-	int mLevel;
-	int mMaxEnemies;
-	int mMinEnemies;
+	short mLevel;
+	short mMaxEnemies;
+	short mMinEnemies;
 
 	unsigned int mScore;
 	unsigned int mHightScore;
@@ -76,11 +76,8 @@ private:
 	void resetGame(); // Thực hiện thiết lập lại toàn bộ dữ liệu như lúc đầu
 	void nextLevel();
 	void playGame(); // Trong qua trinh choi
-	
 
-	// Save and load game
-	void loadGame(); // Thực hiện tải lại trò chơi đã lưu
-	void saveGame(); // Thực hiện lưu lại dữ liệu trò chơi
+
 
 	void pauseGame(); // Tạm dừng Thread
 	void resumeGame(); // Quay lai Thread
@@ -112,6 +109,9 @@ public:
 	CPEOPLE getPeople() const; // Lấy thông tin người
 	CLANE getEnemyLane(); // Lấy danh sách các đồ vật trên 1 lane
 
+	// Save and load game
+	void loadGame(); // Thực hiện tải lại trò chơi đã lưu
+	void saveGame(); // Thực hiện lưu lại dữ liệu trò chơi
 	void Run();
 };
 
