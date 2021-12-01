@@ -24,6 +24,7 @@ CAlienShip::CAlienShip()
 	mSpeed = 3;
 	mIsReachPeople = false;
 	mIsCapture = false;
+	mIsFlyAway = false;
 	mPeople = nullptr;
 }
 
@@ -55,6 +56,8 @@ CAlienShip::CAlienShip(const CAlienShip& other)
 	mPeople = other.mPeople;
 }
 
+CAlienShip::~CAlienShip() {}
+
 CVEHICLE* CAlienShip::Clone()
 {
 	return new CAlienShip(*this);
@@ -74,7 +77,19 @@ bool CAlienShip::isCapturePeople() const
 	return mIsCapture;
 }
 
-void CAlienShip::updatePos()
+bool CAlienShip::isFlyAway() const
+{
+	return mIsFlyAway;
+}
+
+void CAlienShip::reset()
+{
+	mIsReachPeople = false;
+	mIsCapture = false;
+	mIsFlyAway = false;
+}
+
+void CAlienShip::reachPeople()
 {
 	int desX = mPeople->getX() + (mPeople->Width() / 2);
 	int desY = mPeople->getY();
@@ -97,5 +112,21 @@ void CAlienShip::updatePos()
 		setXY(desX - (mWidth / 2), desY - mHeight);
 		mIsReachPeople = true;
 	}
+}
+
+void CAlienShip::capturePeople()
+{
+	if (getY() + mHeight == mPeople->getY() + mPeople->Height()) {
+		mIsCapture = true;
+	}
+	Move(0, 1);
+}
+
+void CAlienShip::flyAway(int y)
+{
+	if (getY() + mHeight < y)
+		mIsFlyAway = true;
+	int speed = mSpeed;
+	Move(0, -speed);
 }
 

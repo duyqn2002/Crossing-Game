@@ -123,6 +123,7 @@ void CGAME::setPeople() {
 	// X is random, Y must at the end of the last square
 	x = x * randomPercent;
 	mPeople = CPEOPLE(x, y, mTopLeft, mBottomRight);
+	mPeople.setState(true);
 }
 
 void CGAME::setAlienShip()
@@ -131,6 +132,7 @@ void CGAME::setAlienShip()
 	int alienPosY = RandomInt(mTopLeft.getY(), mTopLeft.getY() - 10);
 	mAlienShip.setXY(alienPosX, alienPosY);
 	mAlienShip.setPeople(&mPeople);
+	mAlienShip.reset();
 }
 
 CPEOPLE CGAME::getPeople() const {
@@ -205,20 +207,28 @@ void CGAME::renderWhenPlayerDie() {
 		mConsole->ClearScreen();
 
 		if (!mAlienShip.isReachPeople()) {
-			mAlienShip.updatePos();
+			mAlienShip.reachPeople();
+			// Draw people
+			mPeople.drawPeople(*mConsole);
+		}
+		else {
+			if (!mAlienShip.isCapturePeople()) {
+				mAlienShip.capturePeople();
+			}
+			else {
+				mAlienShip.flyAway(mTopLeft.getY());
+
+				if (mAlienShip.isFlyAway())
+					break;
+			}
 		}
 
 		// Draw border
 		drawPlayingArea();
 		mScoreBoard->drawScoreBoard(this);
-		// Draw people
-		mPeople.drawPeople(*mConsole);
+	
 		mAlienShip.drawToConsole(*mConsole, mTopLeft.getX(), mBottomRight.getX());
 		
-		if (!mAlienShip.isReachPeople()) {
-		
-		}
-
 		mConsole->Render();
 		Sleep(30);
 	}

@@ -11,15 +11,23 @@ private:
 	unsigned int mSpeed;
 	bool mIsReachPeople;
 	bool mIsCapture;
+	bool mIsFlyAway;
 public:
 	CAlienShip();
 	CAlienShip(const CAlienShip&);
+	~CAlienShip();
 	virtual CVEHICLE* Clone();
 
 	void setPeople(CPEOPLE*);
+
 	bool isReachPeople() const;
 	bool isCapturePeople() const;
-	void updatePos();
+	bool isFlyAway() const;
+
+	void reset();
+	void reachPeople();
+	void capturePeople();
+	void flyAway(int);
 };
 
 #endif // !CALIEN_SHIP_H

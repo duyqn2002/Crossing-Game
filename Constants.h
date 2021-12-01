@@ -55,8 +55,8 @@ enum class KEY {
 
 	YES = 'Y',
 	NO = 'N',
-	SAVE_GAME = 'L',
-	LOAD_GAME = 'T',
+	SAVE_GAME = 'T',
+	LOAD_GAME = 'L',
 	PAUSE_GAME = 'P',
 
 	NULL_CHAR = '\0',

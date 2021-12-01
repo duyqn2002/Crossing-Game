@@ -6,10 +6,8 @@ CLANE::CLANE(){
 	mLeftLimit = 0;
 	mRightLimit = 0;
 	mEnabledTrafficLight = false;
-
 	mGreenLight = nullptr;
 	mRedLight = nullptr;
-
 	mCurrLightState = nullptr;
 }
 
@@ -18,7 +16,6 @@ CLANE::CLANE(int left,int right) : CLANE() {
 }
 
 CLANE::CLANE(const CLANE& other) : CLANE() {
-	mObjects.resize(0);
 	for (auto& object : other.mObjects) {
 		mObjects.push_back(object->Clone());
 	}
@@ -31,6 +28,7 @@ CLANE::CLANE(const CLANE& other) : CLANE() {
 
 	if (mEnabledTrafficLight) {
 		enableTrafficLight();
+
 		if (other.mCurrLightState == other.mGreenLight) {
 			setTrafficLightState(mGreenLight);
 		}
@@ -49,17 +47,7 @@ CLANE::~CLANE() {
 		object = nullptr;
 	}
 
-	if (mGreenLight != nullptr) {
-		delete mGreenLight;
-		mGreenLight = nullptr;
-	}
-
-	if (mRedLight != nullptr) {
-		delete mRedLight;
-		mRedLight = nullptr;
-	}
-
-	mCurrLightState = nullptr;
+	disableTrafficLight();
 }
 
 CLANE& CLANE::operator=(const CLANE& other)
@@ -85,13 +73,9 @@ CLANE& CLANE::operator=(const CLANE& other)
 	mSpeedOnLane = other.mSpeedOnLane;
 	mEnabledTrafficLight = other.mEnabledTrafficLight;
 
-	mGreenLight = nullptr;
-	mRedLight = nullptr;
-
-	mCurrLightState = nullptr;
-
 	if (mEnabledTrafficLight) {
 		enableTrafficLight();
+
 		if (other.mCurrLightState == other.mGreenLight) {
 			setTrafficLightState(mGreenLight);
 		}
@@ -317,18 +301,21 @@ void CLANE::generateObjectsOnLane(const ENEMY& className, int numberOfObjects)
 
 void CLANE::drawTrafficLight(Console& console)
 {
-	int width = 2;
-	int trafficLightPosX = (mSpeedOnLane > 0) ? mRightLimit - width : mLeftLimit + 1;
-	mCurrLightState->drawTrafficLight(trafficLightPosX, mY, width, console);
+	int trafficLightWidth = 2;
+	// Locate the position of traffic light
+	int trafficLightPosX = (mSpeedOnLane > 0) ? mRightLimit - trafficLightWidth : mLeftLimit + 1;
+
+	mCurrLightState->drawTrafficLight(trafficLightPosX, mY, trafficLightWidth, console);
 }
 
 void CLANE::drawObjectsOnLane(Console& console)
 {
-	for (auto& item : mObjects) {
-		item->drawToConsole(console,mLeftLimit,mRightLimit);
+	for (auto& Object : mObjects) {
+		Object->drawToConsole(console,mLeftLimit,mRightLimit);
 	}
 
 	if (mEnabledTrafficLight) {
 		drawTrafficLight(console);
 	}
+
 }

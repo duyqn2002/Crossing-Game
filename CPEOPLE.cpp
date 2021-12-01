@@ -86,6 +86,11 @@ void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
 	mBottomRight = bottomRight;
 }
 
+void CPEOPLE::setState(bool isAlive)
+{
+	mState = isAlive;
+}
+
 void CPEOPLE::Dead() {
 	mState = false;
 }

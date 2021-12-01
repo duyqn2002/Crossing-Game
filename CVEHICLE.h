@@ -46,7 +46,7 @@ public:
 	void loadData(ifstream&);
 
 	// Render method
-	virtual void drawToConsole(Console&, int, int);
+	void drawToConsole(Console&, int, int);
 };
 
 #endif // CVEHICLE_H

@@ -23,7 +23,6 @@ protected:
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
-
 	virtual CANIMAL* Clone() = 0;
 
 	// Setter
@@ -50,7 +49,7 @@ public:
 	virtual void Tell() {};
 
 	// Render method
-	virtual void drawToConsole(Console&, int, int);
+	void drawToConsole(Console&, int, int);
 };
 
 #endif // CANIMAL_H
