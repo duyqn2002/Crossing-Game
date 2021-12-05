@@ -47,3 +47,7 @@ CDOG::CDOG(const CDOG& other) {
 CANIMAL* CDOG::Clone() {
 	return new CDOG(*this);
 }
+
+void CDOG::Tell()
+{
+}

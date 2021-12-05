@@ -48,15 +48,15 @@ private:
 	// Default game setting 
 	vector<pair<float, ENEMY>> mLanes = {
 		{0.0f,ENEMY::NO_ENEMY},
-		{-1.0f,ENEMY::CDOG},
+		{-2.0f,ENEMY::CDOG},
 		{1.0f,ENEMY::CBIRD},
 		{-1.0f,ENEMY::CDOG},
-		{1.0f,ENEMY::CBIRD},
+		{2.0f,ENEMY::CBIRD},
 		{0.0f,ENEMY::NO_ENEMY},
 		{-1.0f,ENEMY::CCAR},
 		{1.0f,ENEMY::CTRUCK},
 		{-1.0f,ENEMY::CCAR},
-		{1.0f,ENEMY::CTRUCK},
+		{2.0f,ENEMY::CTRUCK},
 		{-1.0f,ENEMY::CCAR},
 		{0.0f,ENEMY::NO_ENEMY},
 	};
@@ -73,11 +73,10 @@ private:
 	// Game flow
 	void renderWhenPlayerDie();
 	void renderGameThread(KEY*);
+
 	void resetGame(); // Thực hiện thiết lập lại toàn bộ dữ liệu như lúc đầu
 	void nextLevel();
 	void playGame(); // Trong qua trinh choi
-
-
 
 	void pauseGame(); // Tạm dừng Thread
 	void resumeGame(); // Quay lai Thread

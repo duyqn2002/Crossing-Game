@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <vector>
 
+#pragma comment(lib, "winmm.lib")
+
 using namespace std;
 
 // Default setting for game

@@ -12,6 +12,7 @@ private:
 	bool mIsReachPeople;
 	bool mIsCapture;
 	bool mIsFlyAway;
+	bool mPlaySound;
 public:
 	CAlienShip();
 	CAlienShip(const CAlienShip&);
@@ -23,6 +24,7 @@ public:
 	bool isReachPeople() const;
 	bool isCapturePeople() const;
 	bool isFlyAway() const;
+	void Sound() const;
 
 	void reset();
 	void reachPeople();

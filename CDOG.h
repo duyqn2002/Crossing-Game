@@ -8,6 +8,7 @@ public:
 	CDOG();
 	CDOG(const CDOG&);
 	virtual CANIMAL* Clone();
+	virtual void Tell();
 };
 
 #endif // CDOG_H

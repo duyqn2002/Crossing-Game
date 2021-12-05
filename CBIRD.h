@@ -8,6 +8,7 @@ public:
 	CBIRD();
 	CBIRD(const CBIRD&);
 	virtual CANIMAL* Clone();
+	virtual void Tell();
 };
 
 

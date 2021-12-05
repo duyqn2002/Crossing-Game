@@ -46,7 +46,7 @@ public:
 	void loadData(ifstream&);
 
 	// Sound
-	virtual void Tell() {};
+	virtual void Tell() = 0;
 
 	// Render method
 	void drawToConsole(Console&, int, int);

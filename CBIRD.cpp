@@ -50,3 +50,8 @@ CBIRD::CBIRD(const CBIRD& other) {
 CANIMAL* CBIRD::Clone() {
 	return new CBIRD(*this);
 }
+
+void CBIRD::Tell()
+{
+	PlaySound(TEXT("AlienShip.wav"), NULL, SND_FILENAME | SND_SYNC);
+}

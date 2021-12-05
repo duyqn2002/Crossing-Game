@@ -103,6 +103,9 @@ void CGAME::setObjects() {
 		case ENEMY::CCAR:
 		case ENEMY::CTRUCK:
 			mLane.enableTrafficLight();
+		case ENEMY::CBIRD:
+		case ENEMY::CDOG:
+			mLane.enableMusic();
 		default:
 			break;
 		}
@@ -203,6 +206,7 @@ void CGAME::drawGame() {
 }
 
 void CGAME::renderWhenPlayerDie() {
+	thread playSound = thread(&CAlienShip::Sound, &mAlienShip);
 	while (true) {
 		mConsole->ClearScreen();
 
@@ -218,8 +222,10 @@ void CGAME::renderWhenPlayerDie() {
 			else {
 				mAlienShip.flyAway(mTopLeft.getY());
 
-				if (mAlienShip.isFlyAway())
+				if (mAlienShip.isFlyAway()) {
+					playSound.join();
 					break;
+				}
 			}
 		}
 

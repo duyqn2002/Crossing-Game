@@ -6,6 +6,7 @@ CLANE::CLANE(){
 	mLeftLimit = 0;
 	mRightLimit = 0;
 	mEnabledTrafficLight = false;
+	mEnableMusic = false;
 	mGreenLight = nullptr;
 	mRedLight = nullptr;
 	mCurrLightState = nullptr;
@@ -175,6 +176,16 @@ void CLANE::disableTrafficLight()
 	mCurrLightState = nullptr;
 }
 
+void CLANE::enableMusic()
+{
+	mEnableMusic = true;
+}
+
+void CLANE::disableMusic()
+{
+	mEnableMusic = false;
+}
+
 void CLANE::storeData(ofstream& ofs) 
 {
 	ofs.write(reinterpret_cast<char*> (&mEnabledTrafficLight), sizeof(bool));
@@ -285,17 +296,18 @@ void CLANE::generateObjectsOnLane(const ENEMY& className, int numberOfObjects)
 	Object->toggleForm(mSpeedOnLane);
 	mObjects.push_back(Object);
 
+	int randomGap = 0;
+	int remainingLane = laneWidth - Object->Width();
 	for (int i = 1; i < numberOfObjects; i++) {
-		int randomGap = RandomInt(Object->Width() + 50, Object->Width());
+		randomGap = RandomInt(remainingLane - (numberOfObjects - i - 1) * Object->Width(), Object->Width());
 
 		Movable* tempItem = Object->Clone();
 		if (mSpeedOnLane > 0) {
-			tempItem->setXY(mObjects[i - 1]->getX() - randomGap, mY);
+			randomGap = - randomGap;
 		}
-		else {
-			tempItem->setXY(mObjects[i - 1]->getX() + randomGap, mY);
-		}
+		tempItem->setXY(mObjects[i - 1]->getX() + randomGap, mY);
 		mObjects.push_back(tempItem);
+		remainingLane -= abs(randomGap);
 	}
 }
 

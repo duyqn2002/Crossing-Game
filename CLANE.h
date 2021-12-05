@@ -17,6 +17,7 @@ private:
 	std::vector<Movable*> mObjects;
 
 	bool mEnabledTrafficLight;
+	bool mEnableMusic;
 
 	ITrafficLightState* mGreenLight;
 	ITrafficLightState* mRedLight;
@@ -50,6 +51,9 @@ public:
 	// Method
 	void enableTrafficLight();
 	void disableTrafficLight();
+
+	void enableMusic();
+	void disableMusic();
 
 	void storeData(ofstream&);
 	void loadData(ifstream&);
