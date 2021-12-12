@@ -84,7 +84,7 @@ bool CAlienShip::isFlyAway() const
 
 void CAlienShip::Sound() const
 {
-	mPlaySound = PlaySound(TEXT("AlienShip.wav"), NULL, SND_FILENAME | SND_SYNC);
+	PlaySound(TEXT("AlienShip.wav"), NULL, SND_FILENAME | SND_SYNC);
 }
 
 void CAlienShip::reset()

@@ -167,8 +167,11 @@ void CCenterMenu::drawMenu(Console& console)
 	}
 }
 
+
 void  CCenterMenu::Run(Console& console) {
 	KEY isPressed;
+	
+
 	do
 	{
 		console.ClearScreen();
@@ -177,8 +180,10 @@ void  CCenterMenu::Run(Console& console) {
 
 		isPressed = keyPressed();
 		if (isPressed == KEY::RETURN) {
-			if(mOptionsFunc[mCurrChoice])
+			if (mOptionsFunc[mCurrChoice])
+			{
 				mOptionsFunc[mCurrChoice]();
+			}
 		}
 		if (mQuit)
 			break;

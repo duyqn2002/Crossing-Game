@@ -10,6 +10,8 @@ CGAME::CGAME()  {
 	mMinEnemies = 1;
 	mMaxEnemies = mMinEnemies;
 
+	soundStatus = 1;
+
 	mScore = 0;
 	mHightScore = 0;
 	// Set obj
@@ -29,6 +31,27 @@ CGAME* CGAME::getGame() {
 
 CGAME::~CGAME() {}
 
+
+
+void CGAME::playBackgroundMusic() const
+{
+	bool test = PlaySound(TEXT("BgMusic.wav"), NULL, SND_FILENAME | SND_ASYNC || SND_LOOP);
+}
+
+void CGAME::turnOff() 
+{
+	soundStatus = 0;
+	PlaySound(NULL, 0, 0);
+	
+}
+
+void CGAME::turnOn() 
+{
+	thread playSound(&CGAME::playBackgroundMusic,this);
+	playSound.join();
+	soundStatus = 1;
+}
+
 void CGAME::setSettingMenu() {
 	Texture gameTitle = \
 		" ######  ######## ######## ######## #### ##    ##  ######\n"
@@ -41,7 +64,8 @@ void CGAME::setSettingMenu() {
 
 	mSettingMenu.setMenuTitle(gameTitle, COLOUR::PINK);
 	mSettingMenu.setMarginTop(4);
-	mSettingMenu.addOption("Audio");
+	mSettingMenu.addOption("Turn on sound",bind(&CGAME::turnOn,this));
+	mSettingMenu.addOption("Turn off sound", bind(&CGAME::turnOff,this));
 	mSettingMenu.addOption("Back to main menu", bind(&CCenterMenu::QuitMenu, &mSettingMenu));
 }
 
@@ -173,6 +197,8 @@ string CGAME::getHelp() const
 		"Press L to load game\n"
 		"Press T to save game\n"
 		"Press P to pause game\n"
+		"Press M to mute game sound\n"
+		"Press O to turn on game sound\n"
 		"Press ESC to go back main menu\n";
 
 	return helpText;
@@ -206,7 +232,7 @@ void CGAME::drawGame() {
 }
 
 void CGAME::renderWhenPlayerDie() {
-	thread playSound = thread(&CAlienShip::Sound, &mAlienShip);
+	
 	while (true) {
 		mConsole->ClearScreen();
 
@@ -223,8 +249,14 @@ void CGAME::renderWhenPlayerDie() {
 				mAlienShip.flyAway(mTopLeft.getY());
 
 				if (mAlienShip.isFlyAway()) {
-					playSound.join();
+					if (soundStatus == 1)
+					{
+						thread playSound = thread(&CAlienShip::Sound, &mAlienShip);
+						playSound.join();
+					}
+						
 					break;
+
 				}
 			}
 		}
@@ -240,10 +272,15 @@ void CGAME::renderWhenPlayerDie() {
 	}
 }
 
+
+
+
 void CGAME::renderGameThread(KEY* MOVING) {
+	
 	while (isPlaying) {
 		// Clear the old screen
 		mConsole->ClearScreen();
+		
 
 		if (!isPause) {
 			if (!mPeople.isDead()) {
@@ -254,6 +291,8 @@ void CGAME::renderGameThread(KEY* MOVING) {
 					mPeople.Dead();
 					thread t = thread(&CGAME::renderWhenPlayerDie, this);
 					t.join();
+					if(soundStatus==1)
+						this->turnOn();
 				}
 
 				if (mPeople.isFinish()) {
@@ -331,6 +370,16 @@ void CGAME::playGame() {
 			case KEY::PAUSE_GAME:
 				pauseGame();
 				break;
+
+			case KEY::MUTE:
+				this->turnOff();
+				break;
+
+			case KEY::SOUND_ON:
+				this->turnOn();
+				break;
+
+			//case
 			case KEY::ESC:
 				exitGame();
 				return;
@@ -352,8 +401,11 @@ void CGAME::playGame() {
 	}
 }
 
+
+
 void CGAME::StartGame() {
 	if (isPlayed) {
+		
 		int result = MessageBox(
 			NULL,
 			L"You will lost all the unsaved process.\nContine to create new game???", // Text in msg box
@@ -451,6 +503,12 @@ void CGAME::updatePosEnemies() {
 	}
 }
 
+
+
 void CGAME::Run() {
+	if (soundStatus == 1)
+	{
+		this->turnOn();
+	}
 	mMainMenu.Run(*mConsole);
 }

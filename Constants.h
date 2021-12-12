@@ -60,6 +60,8 @@ enum class KEY {
 	SAVE_GAME = 'T',
 	LOAD_GAME = 'L',
 	PAUSE_GAME = 'P',
+	MUTE = 'M',
+	SOUND_ON = 'O',
 
 	NULL_CHAR = '\0',
 };

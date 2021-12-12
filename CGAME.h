@@ -33,6 +33,9 @@ private:
 	// Render game thread
 	thread mRenderGame;
 
+	//sound status
+	int soundStatus;  //equals to 1 if background music is on
+
 	// Game state
 	bool isPlaying; // True when player is playing
 	bool isPause; // True when player pause game
@@ -107,6 +110,12 @@ public:
 	Console* getConsole();
 	CPEOPLE getPeople() const; // Lấy thông tin người
 	CLANE getEnemyLane(); // Lấy danh sách các đồ vật trên 1 lane
+
+	void playBackgroundMusic()const;
+
+	//turn on and turn off the back ground music
+	void turnOn();
+	void turnOff();
 
 	// Save and load game
 	void loadGame(); // Thực hiện tải lại trò chơi đã lưu
