@@ -3,18 +3,77 @@
 CPEOPLE::CPEOPLE() {
 	mState = true;
 
-	mPeopleRightForm ="~o/\n"
-					  "/| \n"
-					  "/ \\";
+	mPeopleLeftForm = \
+		"\\o~\n"
+		" |\\\n"
+		" | \n"
+		"/ \\";
 
-	mPeopleLeftForm = "\\o~\n"
-					  " |\\\n"
-					  "/ \\";
+	mPeopleRightForm = \
+		"~o/\n"
+		"/| \n"
+		" | \n"
+		"/ \\";
 
-	mHeight = GetHeightAsciiArt(mPeopleLeftForm);
-	mWidth = GetWidthAsciiArt(mPeopleLeftForm);
+	mHeight = mPeopleLeftForm.Height();
+	mWidth = mPeopleLeftForm.Width();
 
-	mMovingDirection = RandomInt(2,0) ? DIRECTION::LEFT : DIRECTION::RIGHT; // Randomly start direction
+	mCurrForm = &mPeopleLeftForm;
+}
+
+CPEOPLE::CPEOPLE(int x, int y) : CPEOPLE() {
+	setXY(x, y);
+}
+
+CPEOPLE::CPEOPLE(int x, int y, CPOINT2D topLeft, CPOINT2D bottomRight) : CPEOPLE(x, y) {
+	setLimitZone(topLeft, bottomRight);
+}
+
+CPEOPLE::CPEOPLE(const CPEOPLE& other) {
+	mCurrPos = other.mCurrPos;
+
+	mTopLeft = other.mTopLeft;
+	mBottomRight = other.mBottomRight;
+
+	mState = other.mState;
+
+	mPeopleLeftForm = other.mPeopleLeftForm;
+
+	mPeopleRightForm = other.mPeopleRightForm;
+
+	mHeight = other.mHeight;
+	mWidth = other.mWidth;
+
+	if(other.mCurrForm == &other.mPeopleLeftForm)
+		mCurrForm = &mPeopleLeftForm;
+	else
+		mCurrForm = &mPeopleRightForm;
+}
+
+CPEOPLE& CPEOPLE::operator= (const CPEOPLE& other) {
+	if (this == &other)
+		return *this;
+
+	mCurrPos = other.mCurrPos;
+
+	mTopLeft = other.mTopLeft;
+	mBottomRight = other.mBottomRight;
+
+	mState = other.mState;
+
+	mPeopleLeftForm = other.mPeopleLeftForm;
+
+	mPeopleRightForm = other.mPeopleRightForm;
+
+	mHeight = other.mHeight;
+	mWidth = other.mWidth;
+
+	if (other.mCurrForm == &other.mPeopleLeftForm)
+		mCurrForm = &mPeopleLeftForm;
+	else
+		mCurrForm = &mPeopleRightForm;
+
+	return *this;
 }
 
 void CPEOPLE::setXY(int x, int y) {
@@ -27,170 +86,156 @@ void CPEOPLE::setLimitZone(CPOINT2D topLeft, CPOINT2D bottomRight) {
 	mBottomRight = bottomRight;
 }
 
-int CPEOPLE::getHeight() const{
+void CPEOPLE::setState(bool isAlive)
+{
+	mState = isAlive;
+}
+
+void CPEOPLE::Dead() {
+	mState = false;
+}
+
+int CPEOPLE::getX() const {
+	return mCurrPos.getX();
+}
+
+int CPEOPLE::getY() const {
+	return mCurrPos.getY();
+}
+
+int CPEOPLE::Height() const {
 	return mHeight;
 }
 
-int CPEOPLE::getWidth() const{
+int CPEOPLE::Width() const {
 	return mWidth;
 }
 
-void CPEOPLE::Clip(int& x, int& y) {
-	if (x <= mTopLeft.getX())
-		x = mTopLeft.getX() + 1;
-
-	if (x >= mBottomRight.getY())
-		x = mBottomRight.getX() - mWidth;
-
-	if (y < mTopLeft.getY())
-		y = mTopLeft.getY() + 1;
-
-	if (y >= mBottomRight.getY())
-		y = mBottomRight.getY() - mHeight;
+CPOINT2D CPEOPLE::getPos() const
+{
+	return mCurrPos;
 }
 
 void CPEOPLE::Up(int delta) {
 	mCurrPos.moveY(-delta);
-	mMovingDirection = DIRECTION::UP;
 }
 
 void CPEOPLE::Left(int delta) {
 	mCurrPos.moveX(-delta);
-	mMovingDirection = DIRECTION::LEFT;
 }
 
 void CPEOPLE::Right(int delta) {
 	mCurrPos.moveX(delta);
-	mMovingDirection = DIRECTION::RIGHT;
 }
 
 void CPEOPLE::Down(int delta) {
 	mCurrPos.moveY(delta);
-	mMovingDirection = DIRECTION::DOWN;
 }
 
-void CPEOPLE::Move(DIRECTION direction, int delta) {
+void CPEOPLE::Clip() {
+	int currX = mCurrPos.getX();
+	int currY = mCurrPos.getY();
 
-	switch (direction){
-		case DIRECTION::UP:
-					Up(delta);
-					break;
+	int minX = mTopLeft.getX() + 1;
+	int minY = mTopLeft.getY() + 1;
 
-		case DIRECTION::DOWN:
-					Down(delta);
-					break;
+	int maxX = mBottomRight.getX() - mWidth;
+	int maxY = mBottomRight.getY() - mHeight;
 
-		case DIRECTION::LEFT:
-					Left(mWidth);
-					break;
+	// Not allow the people move to outside
+	if (currX <= minX)
+		currX = minX;
+	if (currX >= maxX)
+		currX = maxX;
 
-		case DIRECTION::RIGHT:
-					Right(mWidth);
-					break;
+	if (currY >= maxY)
+		currY = maxY;
+	if (currY <= minY)
+		currY = minY;
+
+	mCurrPos.setXY(currX, currY);
+}
+
+void CPEOPLE::Move(KEY direction, int delta) {
+	switch (direction) {
+	case KEY::UP:
+		Up(delta);
+		break;
+
+	case KEY::DOWN:
+		Down(delta);
+		break;
+
+	case KEY::LEFT:
+		Left(mWidth);
+		mCurrForm = &mPeopleLeftForm;
+		break;
+
+	case KEY::RIGHT:
+		Right(mWidth);
+		mCurrForm = &mPeopleRightForm;
+		break;
+	default:
+		return;
 	}
+
+	mHeight = mCurrForm->Height();
+	mWidth = mCurrForm->Width();
+
+	Clip();
 }
 
-bool CPEOPLE::isImpact(const vector<CVEHICLE>& allVehicles) {
-	return false;
+bool CPEOPLE::isImpact(const CLANE& Lane) {
+	bool isImpact = false;
+
+	for (int i = 0; i < Lane.size(); i++) {
+		if (getX() + Width() >= Lane[i].getX() && getX() <= Lane[i].getX() + Lane[i].Width()) {
+			isImpact = true;
+			break;
+		}
+	}
+
+	// If impact with object, people will die
+	if (isImpact)
+		mState = false;
+	return isImpact;
 }
 
-bool CPEOPLE::isImpact(const vector<CANIMAL>&) {
-	return false;
+void CPEOPLE::storeData(ofstream& ofs)
+{
+	ofs.write(reinterpret_cast<char*>(&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	if (mCurrForm == &mPeopleLeftForm) {
+		state = true;
+	}
+	ofs.write(reinterpret_cast<char*>(&state), sizeof(bool));
 }
 
-bool  CPEOPLE::isFinish() {
-	if (mCurrPos.getY() == mTopLeft.getY() - 1)
+void CPEOPLE::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&mCurrPos), sizeof(CPOINT2D));
+
+	bool state;
+	ifs.read(reinterpret_cast<char*>(&state), sizeof(bool));
+
+	mCurrForm = (state) ? &mPeopleLeftForm : &mPeopleRightForm;
+}
+
+bool  CPEOPLE::isFinish() const {
+	if (mCurrPos.getY() <= mTopLeft.getY() + 1)
 		return true;
 
 	return false;
 }
 
-bool  CPEOPLE::isDead() {
-	/*if (mState == false)
-		return true;
-	return false;*/
+bool  CPEOPLE::isDead() const {
 	return !mState;
 }
 
-bool CPEOPLE::isHitLimit(DIRECTION direction) {
-	bool isOutSide = false;
-	int maxX, minX;
-	int maxY, minY;
-	int currX, currY;
-
-	minX = mTopLeft.getX() + 1;
-	minY = mTopLeft.getY() + 1;
-
-	maxX = mBottomRight.getX() - mWidth;
-	maxY = mBottomRight.getY() - mHeight;
-
-	currX = mCurrPos.getX();
-	currY = mCurrPos.getY();
-
-	switch (direction)
-	{
-	case DIRECTION::UP:
-		if (currY == minY)
-			isOutSide = true;
-		break;
-	case DIRECTION::DOWN:
-		if (currY == maxY)
-			isOutSide = true;
-		break;
-	case DIRECTION::LEFT:
-		if (currX == minX)
-			isOutSide = true;
-		break;
-	case DIRECTION::RIGHT:
-		if (currX == maxX)
-			isOutSide = true;
-		break;
-	}
-
-	return isOutSide;
-}
-
-
-void CPEOPLE::eraseTraceOfPeople() {
-	int index = 0;
-	string line = "";
+void CPEOPLE::drawPeople(Console& console){
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 
-	while (index++ < mWidth) {
-		line += " ";
-	}
-
-	index = 0;
-	while (index < mHeight) {
-		GotoXY(x, y + index++);
-		cout << line;
-	}
-}
-
-void CPEOPLE::drawPeople() const {
-	stringstream sstream;
-	if (mMovingDirection == DIRECTION::LEFT) {
-		sstream << mPeopleLeftForm;
-	}
-	else {
-		sstream << mPeopleRightForm;
-	}
-
-	string tempStr = "";
-	int line = 0;
-	int x = mCurrPos.getX();
-	int y = mCurrPos.getY();
-	TextColor(PEOPLE_COLOUR);
-
-	while (getline(sstream, tempStr, '\n')) {
-		GotoXY(x, y + line++);
-		/*for (int i = 0; i < mWidth; i++) {
-			if (tempStr[i] != ' ' && tempStr[i] != '\n') {
-				TextColor((COLOUR)170);
-				cout << " ";
-			}
-		}*/
-		cout << tempStr;
-	}
+	console.DrawObject(x, y, *mCurrForm, PEOPLE_COLOUR);
 }

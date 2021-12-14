@@ -13,62 +13,83 @@
 #include <stdlib.h>
 #include <vector>
 
+#pragma comment(lib, "winmm.lib")
+
 using namespace std;
 
 // Default setting for game
-constexpr short WINDOW_BUFFER_HEIGHT = 52;
 constexpr short WINDOW_BUFFER_WIDTH = 150;
+constexpr short WINDOW_BUFFER_HEIGHT = 50;
 constexpr short FONT_HEIGHT = 12;
 constexpr short FONT_WIDTH = 12;
-constexpr short MAX_LANE = 10;
-constexpr int LANE_SIZE = 4;
+
+constexpr short LANE_SIZE = 4;
+constexpr short MAX_VEHICLES = 3;
+constexpr short MAX_ANIMALS = 3;
 
 // Position of top left corner of playing area
 constexpr short TOP_LEFT_X = 0;
 constexpr short TOP_LEFT_Y = 0;
 
 // Scale of the playing area
-constexpr float SCALE_X = 0.65;
+constexpr float SCALE_X = 0.75f;
 constexpr float SCALE_Y = 1;
-
-// Border char
-constexpr char TOP_LEFT_CORNER = char(201);
-constexpr char TOP_RIGHT_CORNER = char(187);
-constexpr char BOTTOM_LEFT_CORNER = char(200);
-constexpr char BOTTOM_RIGHT_CORNER = char(188);
-constexpr char HORIZONTAL_OUTLINE = char(205);
-constexpr char VERTICAL_OUTLINE = char(186);
-constexpr char LANE_ROAD = char(196);
 
 // Constant color for game
 #define DEFAULT_COLOUR COLOUR::WHITE
-#define PLAYING_AREA_COLOUR COLOUR::GREEN
+#define PLAYING_AREA_COLOUR COLOUR::CYAN_BG
 #define LANE_COLOUR COLOUR::CYAN
 #define PEOPLE_COLOUR COLOUR::RED
 #define TRUCK_COLOUR COLOUR::PINK
+#define CAR_COLOUR COLOUR::CYAN
 #define DOG_COLOUR   COLOUR::GREEN
 #define BIRD_COLOUR  COLOUR:: RED
 
-
-enum class DIRECTION : char {
+enum class KEY {
 	UP = 'W',
 	DOWN = 'S',
 	LEFT = 'A',
-	RIGHT = 'D'
+	RIGHT = 'D',
+	SPACE = ' ',
+
+	RETURN = '\r',
+	ESC = (char)27,
+
+	YES = 'Y',
+	NO = 'N',
+	SAVE_GAME = 'T',
+	LOAD_GAME = 'L',
+	PAUSE_GAME = 'P',
+	MUTE = 'M',
+	SOUND_ON = 'O',
+
+	NULL_CHAR = '\0',
 };
 
-enum class COLOUR : int {
+enum class COLOUR {
 	GREEN = 10,
 	CYAN = 11,
 	RED = 12,
 	PINK = 13,
 	WHITE = 15,
+
+	RED_BG = 204,
+	GREEN_BG = 170,
+	CYAN_BG = 187,
 };
 
-enum class Level {
-	EASY,
-	MEDIUM,
-	HARD
+enum class LEVEL {
+	EASY = 2,
+	MEDIUM = 3,
+	HARD = 4,
+};
+
+enum class ENEMY {
+	CTRUCK,
+	CCAR,
+	CDOG,
+	CBIRD,
+	NO_ENEMY
 };
 
 #endif // CONSTANTS_H

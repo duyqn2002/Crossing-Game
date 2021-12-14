@@ -1,50 +1,55 @@
 #ifndef CANIMAL_H
 #define CANIMAL_H
-#include "HelpFunctions.h"
-#include"CPOINT2D.h"
 
+#include "Console.h"
+#include "Movable.h"
+#include "Tellable.h"
 
-class CANIMAL {
+class CANIMAL : public Movable, public Tellable {
 protected:
+	// Current position
 	CPOINT2D mCurrPos;
-	int mStartPosX = 0;
 
-	int mLeft = 0;
-	int mRight = 0;
+	// Width and height of vehicle
+	int mHeight;
+	int mWidth;
 
-	int mHeight = 0;
-	int mWidth = 0;
+	// Animal form
+	Texture mAnimalLeftForm;
+	Texture mAnimalRightForm;
+	Texture* mCurrAnimalForm;
 
-	DIRECTION mMovingDirection;
-	string mAnimalLeftForm;
-	string mAnimalRightForm;
-	COLOUR mAnimalColour = DEFAULT_COLOUR;
-
+	COLOUR mAnimalColour;
 public:
 	CANIMAL() = default;
 	virtual ~CANIMAL() = default;
-	void reset();
+	virtual CANIMAL* Clone() = 0;
 
+	// Setter
+	void setX(int);
+	void setY(int);
 	void setXY(int, int);
-	void setStartPosX(int);
-	void setLeft(int);
-	void setRight(int);
+	void setColour(COLOUR);
 
+	// Getter
 	int getX() const;
 	int getY() const;
-
 	int Width() const;
 	int Height() const;
 
-	virtual void Move(int, int);
-	virtual void eraseAnimalHead() const;
-	virtual void eraseAnimalTail() const;
-	virtual void eraseOldAnimal() const;
-	virtual void drawAnimal() const;
+	// Update method
+	void toggleForm(int);
+	void Move(int, int);
 
-	virtual bool isOutSide() const;
-	virtual void updatePos(int);
+	// Save load 
+	void storeData(ofstream&);
+	void loadData(ifstream&);
 
+	// Sound
+	virtual void Tell() = 0;
+
+	// Render method
+	void drawToConsole(Console&, int, int);
 };
 
 #endif // CANIMAL_H

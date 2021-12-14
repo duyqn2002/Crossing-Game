@@ -1,29 +1,19 @@
-#include"CANIMAL.h"
+#include "CANIMAL.h"
 
-void CANIMAL::reset()
-{
-	mCurrPos.setX(mStartPosX);
-
+void CANIMAL::setX(int x) {
+	mCurrPos.setX(x);
 }
 
-void CANIMAL::setXY(int x,int y)
-{
+void CANIMAL::setY(int y) {
+	mCurrPos.setY(y);
+}
+
+void CANIMAL::setXY(int x, int y) {
 	mCurrPos.setXY(x, y);
 }
 
-void CANIMAL::setStartPosX(int startX)
-{
-	mStartPosX = startX;
-	mCurrPos.setX(startX);
-
-}
-
-void CANIMAL::setLeft(int srcX) {
-	mLeft = srcX;
-}
-
-void CANIMAL::setRight(int desX) {
-	mRight = desX;
+void CANIMAL::setColour(COLOUR color) {
+	mAnimalColour = color;
 }
 
 int CANIMAL::getX() const {
@@ -37,126 +27,62 @@ int CANIMAL::getY() const {
 int CANIMAL::Width() const {
 	return mWidth;
 }
+
 int CANIMAL::Height() const {
 	return mHeight;
+}
+
+void CANIMAL::toggleForm(int speed) {
+	if (speed < 0) {
+		mCurrAnimalForm = &mAnimalLeftForm;
+	}
+	else {
+		mCurrAnimalForm = &mAnimalRightForm;
+	}
+
+	mHeight = mCurrAnimalForm->Height();
+	mWidth = mCurrAnimalForm->Width();
 }
 
 void CANIMAL::Move(int deltaX, int deltaY) {
 	mCurrPos.moveXY(deltaX, deltaY);
 }
 
-void CANIMAL::eraseAnimalHead() const {
-	int line = 0;
-	int x = mCurrPos.getX();
-	int y = mCurrPos.getY();
-	while (line < mHeight) {
-		GotoXY(x, y + line++);
-		cout << " ";
-	}
+void CANIMAL::storeData(ofstream& ofs)
+{
+	ofs.write(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	if (mCurrAnimalForm == &mAnimalLeftForm)
+		state = true;
+	ofs.write(reinterpret_cast<char*> (&state), sizeof(bool));
 }
 
-void CANIMAL ::eraseAnimalTail() const {
-	int line = 0;
-	int x = mCurrPos.getX() + mWidth;
-	int y = mCurrPos.getY();
-	while (line < mHeight) {
-		GotoXY(x, y + line++);
-		cout << " ";
-	}
-}
-void CANIMAL::eraseOldAnimal() const {
-	switch (mMovingDirection)
-	{
-	case DIRECTION::LEFT:
-		eraseAnimalTail();
-		break;
-	case DIRECTION::RIGHT:
-		eraseAnimalHead();
-		break;
-	default:
-		return;
-	}
+void CANIMAL::loadData(ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*> (&mCurrPos), sizeof(CPOINT2D));
+
+	bool state = false;
+	ifs.read(reinterpret_cast<char*> (&state), sizeof(bool));
+	mCurrAnimalForm = (state) ? &mAnimalLeftForm : &mAnimalRightForm;
 }
 
-void CANIMAL::drawAnimal() const {
-	// If the Animal in playing zone then draw it
-	if (isOutSide() == true)
-		return;
-
-	int startChar = 0;
-	int nChar = 0;
-	stringstream sstream;
-	string tempStr = "";
-	int line = 0;
+void CANIMAL::drawToConsole(Console& console,int leftLimit, int rightLimit) {
 	int x = mCurrPos.getX();
 	int y = mCurrPos.getY();
 
-	if (x < mLeft) {
-		startChar = mLeft + 1 - x;
-		nChar = mWidth - startChar;
-	}
-	else {
-		if (x + mWidth >= mRight) {
-			startChar = 0;
-			nChar = mRight - x;
-		}
-		else {
-			nChar = mWidth;
-		}
-	}
+	vector<string> form = mCurrAnimalForm->getTexture();
 
-	if (mMovingDirection == DIRECTION::LEFT) {
-		sstream << mAnimalLeftForm;
-	}
-	else {
-		sstream << mAnimalRightForm;
-	}
+	for (const auto& line : form) {
+		for (const auto& c : line) {
+			if (x > leftLimit && x < rightLimit) {
+				// If inside the playing zone then draw it
+				console.DrawPixels(x, y, c, mAnimalColour);
+			}
 
-	TextColor(mAnimalColour);
-	while (getline(sstream, tempStr, '\n')) {
-		GotoXY(x + startChar, y + line++);
-		cout << tempStr.substr(startChar, nChar);
+			x++;
+		}
+		x = mCurrPos.getX();
+		y++;
 	}
 }
-
-bool CANIMAL::isOutSide() const {
-	bool isOutSide = false;
-	int x = mCurrPos.getX();
-
-	switch (mMovingDirection)
-	{
-	case DIRECTION::LEFT:
-		if (x + mWidth >= mLeft || x <= mRight)
-			isOutSide = true;
-		break;
-	case DIRECTION::RIGHT:
-		if (x + mWidth <= mLeft || x >= mRight)
-			isOutSide = true;
-		break;
-	default:
-		break;
-	}
-
-	return isOutSide;
-}
-
-void CANIMAL::updatePos(int deltaX) {
-	// Before update position, erase the old trace of vehicle
-	eraseOldAnimal();
-
-	switch (mMovingDirection)
-	{
-	case DIRECTION::LEFT:
-		Move(-deltaX, 0);
-		break;
-	case DIRECTION::RIGHT:
-		if (mCurrPos.getX() > mRight + 10) {
-			reset();
-		}
-		Move(deltaX, 0);
-		break;
-	default:
-		return;
-	}
-}
-

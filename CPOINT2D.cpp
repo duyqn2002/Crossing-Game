@@ -21,9 +21,11 @@ void CPOINT2D::setXY(int x, int y) {
 void CPOINT2D::moveX(int deltaX) {
 	mX += deltaX;
 }
+
 void CPOINT2D::moveY(int deltaY) {
 	mY += deltaY;
 }
+
 void CPOINT2D::moveXY(int deltaX, int deltaY) {
 	moveX(deltaX);
 	moveY(deltaY);
@@ -32,6 +34,12 @@ void CPOINT2D::moveXY(int deltaX, int deltaY) {
 int CPOINT2D::getX() const {
 	return mX;
 }
+
 int CPOINT2D::getY() const {
 	return mY;
+}
+
+double CPOINT2D::Distance(const CPOINT2D& other) const
+{
+	return sqrt(pow(other.getX() - getX(),2) + pow(other.getY() - getY() , 2));
 }

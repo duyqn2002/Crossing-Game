@@ -1,47 +1,52 @@
 #ifndef CVEHICLE_H
 #define CVEHICLE_H
 
-#include "HelpFunctions.h"
-#include "CPOINT2D.h"
+#include "Console.h"
+#include "Movable.h"
 
-class CVEHICLE {
+class CVEHICLE : public Movable{
 protected:
+	// Current position
 	CPOINT2D mCurrPos;
-	int mStartPosX = 0;
 
-	int mLeft = 0;
-	int mRight = 0;
+	// Width and height of vehicle
+	int mHeight;
+	int mWidth;
 
-	int mHeight = 0;
-	int mWidth = 0;
-	DIRECTION mMovingDirection;
-	string mVehicleLeftForm;
-	string mVehicleRightForm;
-	COLOUR mVehicleColour = DEFAULT_COLOUR;
+	// Vehicle form
+	Texture mVehicleLeftForm;
+	Texture mVehicleRightForm;
+	Texture* mCurrVehicleForm;
+
+	// Color for vehicle
+	COLOUR mVehicleColour;
 public:
 	CVEHICLE() = default;
 	virtual ~CVEHICLE() = default;
-	void reset();
+	virtual CVEHICLE* Clone() = 0;
 
+	// Setter
+	void setX(int);
+	void setY(int);
 	void setXY(int, int);
-	void setStartPosX(int);
-	void setLeft(int);
-	void setRight(int);
+	void setColour(COLOUR);
 
+	// Getter
 	int getX() const;
 	int getY() const;
-
 	int Width() const;
 	int Height() const;
 
-	virtual void Move(int, int);
-	virtual void eraseVehicleHead() const;
-	virtual void eraseVehicleTail() const;
-	virtual void eraseOldVehicle() const;
-	virtual void drawVehicle() const;
+	// Update method
+	void toggleForm(int);
+	void Move(int, int);
 
-	virtual bool isOutSide() const;
-	virtual void updatePos(int);
+	// Save load 
+	void storeData(ofstream&);
+	void loadData(ifstream&);
+
+	// Render method
+	void drawToConsole(Console&, int, int);
 };
 
 #endif // CVEHICLE_H

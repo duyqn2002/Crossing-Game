@@ -1,55 +1,71 @@
-﻿
-
-#ifndef CPEOPLE_H
+﻿#ifndef CPEOPLE_H
 #define CPEOPLE_H
 
-#include <string>
-#include <iostream>
-#include <sstream>
+#include "CLANE.h"
 
-#include "HelpFunctions.h"
-#include "CVEHICLE.h"
-#include "CANIMAL.h"
-
-using namespace std;
-
-class CPEOPLE{
+class CPEOPLE {
+private:
+	// Current position 2D
 	CPOINT2D mCurrPos;
-	CPOINT2D mTopLeft, mBottomRight; // Limit zone
-	int mHeight, mWidth;
-	bool mState; // State of alive
-	string mPeopleRightForm;
-	string mPeopleLeftForm;
-	DIRECTION mMovingDirection;
 
+	// Limit zone
+	CPOINT2D mTopLeft;
+	CPOINT2D mBottomRight;
+
+	// Height and width of people
+	int mHeight;
+	int mWidth;
+
+	// State of alive
+	bool mState;
+
+	// People form in ascii
+	Texture mPeopleLeftForm;
+	Texture mPeopleRightForm;
+	Texture* mCurrForm;
 public:
 	CPEOPLE();
+	CPEOPLE(int, int);
+	CPEOPLE(int, int, CPOINT2D, CPOINT2D);
+	CPEOPLE(const CPEOPLE&);
+	~CPEOPLE() = default;
+
+	CPEOPLE& operator= (const CPEOPLE&);
+
+	// Setter
 	void setXY(int, int);
 	void setLimitZone(CPOINT2D, CPOINT2D);
+	void setState(bool);
+	void Dead();
 
-	int getHeight() const;
-	int getWidth() const;
+	// Getter
+	int getX() const;
+	int getY() const;
+	int Height() const;
+	int Width() const;
+	CPOINT2D getPos() const;
 
-	void Clip(int&, int&);
 	// Moving function
 	void Up(int);
 	void Left(int);
 	void Right(int);
 	void Down(int);
-	void Move(DIRECTION, int);
+
+	void Clip(); // Don't let the people go outside the playing area
+	void Move(KEY, int);
 
 	// Check impact
-	bool isImpact(const vector<CVEHICLE>&);
-	bool isImpact(const vector<CANIMAL>&);
+	bool isImpact(const CLANE&);
+
+	void storeData(ofstream&);
+	void loadData(ifstream&);
 
 	// Handle the event
-	bool isFinish();
-	bool isDead();
-	bool isHitLimit(DIRECTION);
+	bool isFinish() const;
+	bool isDead() const;
 
 	// Render people function
-	void eraseTraceOfPeople();
-	void drawPeople() const;
+	void drawPeople(Console&);
 };
 
 #endif // CPEOPLE_H
